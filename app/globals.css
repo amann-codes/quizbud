@@ -76,6 +76,7 @@
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --font-family: "Jost", sans-serif;
 }
 
 .dark {
@@ -118,5 +119,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Jost", sans-serif;
   }
 }
