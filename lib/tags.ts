@@ -1,3 +1,4 @@
+import { Topic, Difficulty, TimeLimit, QuesitonsLimit } from "./types";
 
 export const TOPICS: { label: string; value: Topic }[] = [
     { label: "Aptitude", value: "aptitude" },
