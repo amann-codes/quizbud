@@ -110,7 +110,7 @@ export default function Signin() {
             )}
           </Button>
           <div className="text-xs text-center">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link className="underline ml-1" href="/signup">
               Signup
             </Link>

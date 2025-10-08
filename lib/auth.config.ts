@@ -38,12 +38,12 @@ export const authOptions = {
             }
         })
     ],
-    secret:process.env.AUTH_SECRET,
+    secret: process.env.AUTH_SECRET,
     session: {
         strategy: "jwt"
     },
     callbacks: {
-        jwt: async ({ user, token }: { user?: User | AdapterUser; token: JWT }): Promise<JWT> => {
+        jwt: async ({ token }: { user?: User | AdapterUser; token: JWT }): Promise<JWT> => {
             return token;
         },
         session: async ({ session, token }: { session: Session; token: JWT }): Promise<Session> => {
