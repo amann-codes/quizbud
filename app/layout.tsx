@@ -1,6 +1,6 @@
 "use client"
 
-import { Geist, Geist_Mono, Jost } from "next/font/google";
+import { Geist_Mono, Jost } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/pages/layout/Provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
