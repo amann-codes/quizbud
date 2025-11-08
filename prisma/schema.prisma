@@ -29,34 +29,38 @@ model Quiz {
   id         String       @id @default(auto()) @map("_id") @db.ObjectId
   name       String
   questions  Question[]
+  timeLimit  Int          @map("time_limit")
   creatorId  String       @map("creator_id") @db.ObjectId
   creator    User         @relation("QuizCreator", fields: [creatorId], references: [id])
-  tests      Test[]
   sharedWith QuizAccess[]
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  Test       Test[]
 }
 
 model QuizAccess {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  quizId   String   @map("quiz_id") @db.ObjectId
-  quiz     Quiz     @relation(fields: [quizId], references: [id])
-  userId   String   @map("user_id") @db.ObjectId
-  user     User     @relation(fields: [userId], references: [id])
-  sharedAt DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  quizId    String   @map("quiz_id") @db.ObjectId
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  userId    String   @map("user_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  sharedAt  DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([quizId, userId])
 }
 
 model Test {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  score       Int?
-  status      TestStatus   @default(IN_PROGRESS)
-  answers     UserAnswer[]
-  quizId      String       @map("quiz_id") @db.ObjectId
-  quiz        Quiz         @relation(fields: [quizId], references: [id])
-  userId      String       @map("user_id") @db.ObjectId
-  user        User         @relation(fields: [userId], references: [id])
-  startedAt   DateTime     @default(now())
-  completedAt DateTime?
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  quiz      Quiz       @relation(fields: [quizId], references: [id])
+  User      User?      @relation(fields: [userId], references: [id])
+  quizId    String     @map("quiz_id") @db.ObjectId
+  userId    String     @map("user_id") @db.ObjectId
+  questions Question[]
+  timeLimit Int        @map("time_limit")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
 }
 
 type Question {
@@ -64,12 +68,14 @@ type Question {
   question    String
   options     Option[]
   explanation String?
+  skip        Boolean?
 }
 
 type Option {
-  id      String  @default(cuid()) @map("_id")
-  option  String
-  correct Boolean
+  id           String  @default(cuid()) @map("_id")
+  option       String
+  correct      Boolean
+  userSelected Boolean
 }
 
 type UserAnswer {
