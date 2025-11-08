@@ -1,16 +1,15 @@
 "use client"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, ClipboardIcon, ClipboardList, Clock, Share2, Share2Icon, UserRound } from 'lucide-react';
+import { AlertCircle, ClipboardIcon, ClipboardList, Clock, UserRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getAllQuiz } from '@/actions/getAllQuiz';
 import { createTest } from '@/actions/createTest';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getAllTest } from '@/actions/getAllTest';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
-import { Quiz, quizBody, QuizInTest } from '@/lib/types';
+import { QuizInstanceInTest } from '@/lib/types';
 import { useState } from 'react';
 
 export function Tests() {
@@ -110,7 +109,7 @@ export function Tests() {
 
 interface QuizCardProps {
     id: string
-    quiz: QuizInTest
+    quiz: QuizInstanceInTest
     questions: number
     timeLimit: number
     setIsStarting: (value: boolean) => void

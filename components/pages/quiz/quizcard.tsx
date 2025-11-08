@@ -65,14 +65,12 @@ export default function QuizCard({ id }: { id: string }) {
                         Quiz Not Found
                     </h1>
                     <p className="text-muted-foreground text-center mb-8">
-                        The quiz you're looking for doesn't exist or has been removed.
+                        The quiz you&apos;re looking for doesn&apos;t exist or has been removed.
                     </p>
                     <div className="flex justify-center">
-                        <Button asChild className="w-full sm:w-auto px-6 py-3 gap-2">
-                            <a href="/">
-                                <ArrowLeft className="h-5 w-5" />
-                                Back to Home
-                            </a>
+                        <Button onClick={() => router.push('/')} className="w-full sm:w-auto px-6 py-3 gap-2">
+                            <ArrowLeft className="h-5 w-5" />
+                            Back to Home
                         </Button>
                     </div>
                 </section>

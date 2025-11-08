@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -8,8 +8,9 @@ import type { SelectedAnswers, TimePerQuestion, Test } from "@/lib/types"
 import { ResultsView } from "@/components/pages/result/resultcard"
 import { useQuery } from "@tanstack/react-query"
 import { getTest } from "@/actions/getTest"
-import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react"
+import { AlertCircle, ArrowLeft } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useRouter } from "next/navigation"
 
 function pad(n: number) {
     return n.toString().padStart(2, "0")
@@ -24,6 +25,9 @@ function toHMS(ms: number) {
 }
 
 export function TestCard({ id }: { id: string }) {
+
+    const router = useRouter();
+
     const getTestQuery = useQuery({
         queryKey: ["testData", id],
         queryFn: (): Promise<Test> => getTest(id),
@@ -148,14 +152,12 @@ export function TestCard({ id }: { id: string }) {
                         Test Not Found
                     </h1>
                     <p className="text-muted-foreground text-center mb-8">
-                        The test you're looking for doesn't exist or has been removed.
+                        The test you&apos;re looking for doesn&apos;t exist or has been removed.
                     </p>
                     <div className="flex justify-center">
-                        <Button asChild className="w-full sm:w-auto px-6 py-3 gap-2">
-                            <a href="/">
-                                <ArrowLeft className="h-5 w-5" />
-                                Back to Home
-                            </a>
+                        <Button onClick={() => router.push('/')} className="w-full sm:w-auto px-6 py-3 gap-2">
+                            <ArrowLeft className="h-5 w-5" />
+                            Back to Home
                         </Button>
                     </div>
                 </section>

@@ -10,14 +10,3 @@ export const getInitials = (name: string) => {
   const initials = parts.map(p => p.charAt(0).toUpperCase());
   return initials.join('');
 }
-
-export function requestFullScreen() {
-  const elem = document.documentElement;
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if ((elem as any).webkitRequestFullscreen) {
-    (elem as any).webkitRequestFullscreen();
-  } else if ((elem as any).msRequestFullscreen) {
-    (elem as any).msRequestFullscreen();
-  }
-}
