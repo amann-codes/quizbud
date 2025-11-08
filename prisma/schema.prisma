@@ -75,7 +75,7 @@ type Option {
   id           String  @default(cuid()) @map("_id")
   option       String
   correct      Boolean
-  userSelected Boolean
+  userSelected Boolean?
 }
 
 type UserAnswer {
