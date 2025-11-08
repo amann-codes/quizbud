@@ -2,6 +2,7 @@
 
 import { Quiz } from "@/lib/types";
 import { getSession } from "./getSession"
+import prisma from "@/lib/prisma";
 
 export async function getQuiz(id: string): Promise<Quiz> {
     try {
