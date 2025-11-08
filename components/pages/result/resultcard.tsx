@@ -40,9 +40,6 @@ export function ResultsView({
         }
     }, [test, answers])
 
-    const allTimes = Object.values(timeData)
-    const maxTime = allTimes.length > 0 ? Math.max(...allTimes) : 1
-
     const handleShareResults = () => {
         const shareData = {
             test,
