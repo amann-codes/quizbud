@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Play, Share2, Loader2, AlertCircle, Home, ArrowLeft } from "lucide-react"
+import { Play, Share2, Loader2, AlertCircle, ArrowLeft } from "lucide-react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getQuiz } from "@/actions/getQuiz";
 import { Skeleton } from "@/components/ui/skeleton"

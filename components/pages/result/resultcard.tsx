@@ -1,7 +1,7 @@
 import { Question, SelectedAnswers, TimePerQuestion, Test } from "@/lib/types"
 import { useMemo } from "react"
 import { toast } from "sonner"
-import { ArrowLeft, ArrowLeftToLineIcon, Share2 } from "lucide-react"
+import { ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 

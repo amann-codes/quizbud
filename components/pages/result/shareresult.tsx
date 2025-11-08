@@ -6,7 +6,7 @@ import { Trophy, Clock, User, Calendar, Share2, ArrowLeft, AlertCircle, Loader2 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import type { Test, SelectedAnswers, TimePerQuestion } from "@/lib/types"
+import type { Test, SelectedAnswers, TimePerQuestion, Option, Question } from "@/lib/types"
 import { useRouter } from "next/navigation"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -134,8 +134,8 @@ export const ViewResult = () => {
     return `${m}:${s.toString().padStart(2, "0")}`
   }
 
-  const getCorrectOptionId = (q: any) => {
-    const correctOption = q.options.find((opt: any) => opt.correct)
+  const getCorrectOptionId = (q: Question) => {
+    const correctOption = q.options.find((opt: Option) => opt.correct)
     return correctOption ? correctOption.id : null
   }
 
@@ -180,7 +180,7 @@ export const ViewResult = () => {
               const correctOptionId = getCorrectOptionId(q)
               const isCorrect = userAnswer === correctOptionId
               const timeSpent = timeData[q.id] ?? 0
-              const correctOption = correctOptionId ? q.options.find((o: any) => o.id === correctOptionId) : null
+              const correctOption = correctOptionId ? q.options.find((o: Option) => o.id === correctOptionId) : null
 
               return (
                 <div
@@ -204,7 +204,7 @@ export const ViewResult = () => {
                   <div className="text-sm space-y-1 text-muted-foreground">
                     <p>
                       <strong>Your answer:</strong>{" "}
-                      {userAnswer ? q.options.find((o: any) => o.id === userAnswer)?.option || "Unknown" : "Skipped"}
+                      {userAnswer ? q.options.find((o: Option) => o.id === userAnswer)?.option || "Unknown" : "Skipped"}
                     </p>
                     {!isCorrect && correctOption && (
                       <p>
