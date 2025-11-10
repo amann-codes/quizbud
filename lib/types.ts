@@ -1,3 +1,5 @@
+import z from "zod";
+
 export type Topic = "aptitude" | "logical-reasoning" | "technical-questions" | "verbal" | "quants"
 
 export type Difficulty = "easy" | "medium" | "hard"
@@ -94,3 +96,14 @@ export type quizBody = {
         tests: number
     }
 }
+
+export const EventSchema = z.object({
+    eventType: z.enum(["SELECT", "SKIP", "NAVIGATE", "TIMEOUT", "HARDRESET", "RESET"]),
+    questionId: z.string().optional(),
+    optionId: z.string().optional(),
+    questionIndex: z.number().int().min(0),
+    idempotencyKey: z.string(),
+    clientTimestamp: z.string().optional(),
+});
+
+export type EventPayload = z.infer<typeof EventSchema>
