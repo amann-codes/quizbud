@@ -52,19 +52,44 @@ model QuizAccess {
 }
 
 model Test {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  quiz      Quiz       @relation(fields: [quizId], references: [id])
-  User      User?      @relation(fields: [userId], references: [id])
-  quizId    String     @map("quiz_id") @db.ObjectId
-  userId    String     @map("user_id") @db.ObjectId
-  questions Question[]
-  timeLimit Int        @map("time_limit")
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  quiz         Quiz       @relation(fields: [quizId], references: [id])
+  User         User?      @relation(fields: [userId], references: [id])
+  quizId       String     @map("quiz_id") @db.ObjectId
+  userId       String     @map("user_id") @db.ObjectId
+  questions    Question[]
+  currentIndex Int?       @map("current_index")
+  testStatus   TestStatus @default(IN_PROGRESS) @map("test_status")
+  timeLimit    Int        @map("time_limit")
+  endedAt      DateTime?  @map("ended_at")
+  startedAt    DateTime   @default(now()) @map("started_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  results      Result[]
+}
+
+model TestEvent {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  testId         String    @map("test_id") @db.ObjectId
+  eventType      EventType @map("event_type")
+  payload        Json
+  idempotencyKey String    @unique @map("idempotency_key")
+  createdAt      DateTime  @default(now())
+  processed      Boolean   @default(false)
+}
+
+model Result {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  test          Test     @relation(fields: [testId], references: [id])
+  testId        String   @map("test_id") @db.ObjectId
+  totalQuestion Int      @map("total_questions")
+  scored        Int
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 }
 
 type Question {
-  id          String   @default(cuid()) @map("_id")
+  id          String   @default(uuid())
   question    String
   options     Option[]
   explanation String?
@@ -72,18 +97,22 @@ type Question {
 }
 
 type Option {
-  id           String  @default(cuid()) @map("_id")
+  id           String   @default(uuid())
   option       String
   correct      Boolean
   userSelected Boolean?
 }
 
-type UserAnswer {
-  questionId       String
-  selectedOptionId String
-}
-
 enum TestStatus {
   IN_PROGRESS
   COMPLETED
+}
+
+enum EventType {
+  SELECT
+  SKIP
+  NAVIGATE
+  TIMEOUT
+  HARDRESET
+  RESET
 }
