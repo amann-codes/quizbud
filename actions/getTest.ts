@@ -14,6 +14,15 @@ export async function getTest(id: string): Promise<Test> {
             where: { id },
             select: {
                 id: true,
+                startedAt: true,
+                testStatus: true,
+                currentIndex: true,
+                endedAt: true,
+                quiz: {
+                    select: {
+                        name: true
+                    }
+                },
                 questions: {
                     select: {
                         id: true,
@@ -23,7 +32,7 @@ export async function getTest(id: string): Promise<Test> {
                             select: {
                                 id: true,
                                 option: true,
-                                correct:true
+                                correct: true
                             },
                         },
                     },

@@ -16,6 +16,7 @@ export async function getAllQuiz() {
         }
         return quiz
     } catch (e) {
+        console.log(`Error at getAllQuiz: ${e}`)
         throw new Error(`Error occured getting your quizzees: ${e}`)
     }
 }
