@@ -11,18 +11,7 @@ import { getTest } from "@/actions/getTest"
 import { AlertCircle, ArrowLeft } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useRouter } from "next/navigation"
-
-function pad(n: number) {
-    return n.toString().padStart(2, "0")
-}
-
-function toHMS(ms: number) {
-    const totalSeconds = Math.floor(ms / 1000)
-    const h = Math.floor(totalSeconds / 3600)
-    const m = Math.floor((totalSeconds % 3600) / 60)
-    const s = totalSeconds % 60
-    return { h, m, s }
-}
+import { pad, toHMS } from "@/lib/utils"
 
 export function TestCard({ id }: { id: string }) {
 
