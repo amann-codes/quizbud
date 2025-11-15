@@ -1,11 +1,12 @@
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/pages/layout/appsidebar"
+import { Header } from "@/components/pages/layout/header"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <SidebarProvider>
-            <AppSidebar />
-            {children}
-        </SidebarProvider>
+        <div className="flex flex-col h-dvh">
+            <Header />
+            <main className="flex-1">
+                {children}
+            </main>
+        </div>
     )
 }

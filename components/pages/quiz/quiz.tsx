@@ -53,7 +53,7 @@ export default function QuizForm() {
     }
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center p-4 bg-background">
+        <div className="h-full w-full flex items-center justify-center p-4 bg-background">
             <Card className="w-full max-w-3xl border bg-card text-card-foreground">
                 <CardContent className="p-6">
                     <form onSubmit={onSubmit} className="flex flex-col gap-6">

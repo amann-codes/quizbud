@@ -4,16 +4,19 @@ import { useSession } from "next-auth/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { LogIn } from "lucide-react";
+import Link from "next/link";
 
-export function UserButton({ isOpen }: { isOpen: boolean }) {
+export function UserButton() {
     const { data: session } = useSession();
 
     if (!session?.user) {
         return (
-            <>
-                <LogIn className="size-5" />
-                {isOpen && <span className="ml-2 text-sm">Sign In</span>}
-            </>
+            <Link href={'/signin'}>
+                <div className="flex gap-2">
+                    <span className="ml-2 text-sm">Sign In</span>
+                    <LogIn className="size-5" />
+                </div>
+            </Link>
         )
     }
 
@@ -27,11 +30,6 @@ export function UserButton({ isOpen }: { isOpen: boolean }) {
                     {session.user.name && getInitials(session.user.name)}
                 </AvatarFallback>
             </Avatar>
-            {isOpen && (
-                <span className="ml-2 truncate text-sm font-semibold">
-                    {session.user.name}
-                </span>
-            )}
         </>
     )
 }

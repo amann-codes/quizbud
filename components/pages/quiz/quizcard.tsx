@@ -56,7 +56,7 @@ export default function QuizCard({ id }: { id: string }) {
 
     if (getQuizQuery.isError) {
         return (
-            <main className="min-h-dvh w-full bg-background text-foreground flex items-center justify-center p-4">
+            <main className="h-full w-full bg-background text-foreground flex items-center justify-center p-4">
                 <section className="w-full max-w-md rounded-xl border bg-card text-card-foreground shadow-sm p-6 md:p-8">
                     <div className="flex justify-center mb-6">
                         <AlertCircle className="h-12 w-12 text-destructive" />
@@ -80,7 +80,7 @@ export default function QuizCard({ id }: { id: string }) {
 
     if (getQuizQuery.isPending) {
         return (
-            <main className="min-h-dvh w-full bg-background text-foreground flex items-center justify-center p-4">
+            <main className="h-full w-full bg-background text-foreground flex items-center justify-center p-4">
                 <section className="w-full max-w-3xl rounded-xl border bg-card text-card-foreground shadow-sm p-6 md:p-8">
                     <header className="text-center border-b pb-6 mb-8">
                         <Skeleton className="inline-block h-6 w-28 rounded-full" />
@@ -115,7 +115,7 @@ export default function QuizCard({ id }: { id: string }) {
     }
 
     return (
-        <main className="min-h-dvh w-full bg-background text-foreground flex items-center justify-center p-4">
+        <main className="h-full w-full bg-background text-foreground flex items-center justify-center p-4">
             <section
                 className={`w-full max-w-3xl rounded-xl border bg-card text-card-foreground shadow-sm p-6 md:p-8 transition-opacity ${isDisabled ? 'opacity-50 pointer-events-none' : ''
                     }`}

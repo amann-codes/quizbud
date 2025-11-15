@@ -22,7 +22,7 @@ export function Quizzes() {
 
     if (getQuizQuery.isError) {
         return (
-            <main className="min-h-dvh w-full bg-background text-foreground flex items-center justify-center p-4">
+            <main className="h-full w-full bg-background text-foreground flex items-center justify-center p-4">
                 <section className="w-full max-w-md bg-card text-card-foreground p-6 md:p-8 rounded-2xl shadow-sm">
                     <div className="flex justify-center mb-6">
                         <AlertCircle className="h-12 w-12 text-destructive" />
@@ -37,7 +37,7 @@ export function Quizzes() {
 
     if (getQuizQuery.isPending) {
         return (
-            <div className="min-h-screen w-full flex flex-col p-4 bg-background gap-8">
+            <div className="h-full w-full flex flex-col p-4 bg-background gap-8">
                 <Skeleton className="w-80 h-10 my-4" />
                 <div className="grid grid-cols-3 gap-3 w-full">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -62,7 +62,7 @@ export function Quizzes() {
 
     if (getQuizQuery.data?.length === 0) {
         return (
-            <main className="min-h-dvh w-full bg-background text-foreground flex items-center justify-center p-4">
+            <main className="h-full w-full bg-background text-foreground flex items-center justify-center p-4">
                 <section className="w-full max-w-md bg-card text-card-foreground p-6 md:p-8 rounded-2xl shadow-sm">
                     <div className="flex justify-center mb-6">
                         <ClipboardList className="h-12 w-12 text-muted-foreground" />
@@ -88,7 +88,7 @@ export function Quizzes() {
 
     return (
         <div
-            className={`min-h-screen w-full flex flex-col p-4 bg-background gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""
+            className={`h-full w-full flex flex-col p-4 bg-background gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""
                 }`}
         >
             <h1 className="text-3xl font-bold my-4">Quiz Created by You</h1>
