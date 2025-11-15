@@ -9,9 +9,12 @@ export async function getTest(id: string): Promise<Test> {
         if (!id) {
             throw new Error('Id is required to get a test')
         }
-        await getSession();
+        const session = await getSession();
         const test = await prisma.test.findUnique({
-            where: { id },
+            where: {
+                id,
+                AND: { userId: session.user.id }
+            },
             select: {
                 id: true,
                 startedAt: true,
@@ -27,12 +30,13 @@ export async function getTest(id: string): Promise<Test> {
                     select: {
                         id: true,
                         question: true,
-                        explanation: true,
+                        explanation: false,
                         options: {
                             select: {
                                 id: true,
                                 option: true,
-                                correct: true
+                                correct: false,
+                                userSelected: true
                             },
                         },
                     },
@@ -40,7 +44,6 @@ export async function getTest(id: string): Promise<Test> {
                 timeLimit: true,
             },
         });
-
         if (!test) {
             throw new Error('test not found')
         }
