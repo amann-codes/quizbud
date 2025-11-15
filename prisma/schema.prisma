@@ -58,7 +58,7 @@ model Test {
   quizId       String     @map("quiz_id") @db.ObjectId
   userId       String     @map("user_id") @db.ObjectId
   questions    Question[]
-  currentIndex Int?       @map("current_index")
+  currentIndex Int        @default(0) @map("current_index")
   testStatus   TestStatus @default(IN_PROGRESS) @map("test_status")
   timeLimit    Int        @map("time_limit")
   endedAt      DateTime?  @map("ended_at")
@@ -69,13 +69,15 @@ model Test {
 }
 
 model TestEvent {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  testId         String    @map("test_id") @db.ObjectId
-  eventType      EventType @map("event_type")
-  payload        Json
-  idempotencyKey String    @unique @map("idempotency_key")
-  createdAt      DateTime  @default(now())
-  processed      Boolean   @default(false)
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  testId          String    @map("test_id") @db.ObjectId
+  eventType       EventType @map("event_type")
+  payload         Json
+  clientTimeStamp DateTime  @map("client_timestamp")
+  serverTimeStamp DateTime  @map("server_timestamp")
+  idempotencyKey  String    @unique @map("idempotency_key")
+  createdAt       DateTime  @default(now())
+  processed       Boolean   @default(false)
 }
 
 model Result {
@@ -93,7 +95,7 @@ type Question {
   question    String
   options     Option[]
   explanation String?
-  skip        Boolean?
+  skip        Boolean  @default(false)
 }
 
 type Option {
@@ -111,6 +113,7 @@ enum TestStatus {
 enum EventType {
   SELECT
   SKIP
+  SUBMIT
   NAVIGATE
   TIMEOUT
   HARDRESET
