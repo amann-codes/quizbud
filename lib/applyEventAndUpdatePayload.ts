@@ -1,6 +1,6 @@
 import { EventPayload, Test } from "./types";
 
-export function applyEventAndUpdatePayload(test: Test, payload: EventPayload) {
+export function applyEventAndUpdatePayload(test: Test, payload: EventPayload): Test {
 
     const event = payload.eventType;
     const updatedTest = structuredClone(test);
@@ -26,6 +26,7 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload) {
         }
         case "NAVIGATE": {
             updatedTest.currentIndex = payload.questionIndex;
+            updatedTest.endedAt = payload.clientTimestamp;
             break;
         }
         case "SKIP": {
@@ -44,8 +45,15 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload) {
             );
             break;
         }
-        case "TIMEOUT": {
+        case "SUBMIT": {
             updatedTest.testStatus = "COMPLETED"
+            updatedTest.endedAt = payload.clientTimestamp
+            updatedTest.currentIndex = payload.questionIndex
+        }
+        case "TIMEOUT": {
+            console.log("timeout")
+            updatedTest.testStatus = "COMPLETED";
+            updatedTest.endedAt = payload.clientTimestamp;
             break;
         }
         case "HARDRESET": {
@@ -62,6 +70,7 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload) {
             break;
         }
         case "RESET": {
+            if (!payload.questionId) break;
             updatedTest.questions = updatedTest.questions.map((q) =>
                 q.id === payload.questionId
                     ? {
@@ -77,10 +86,5 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload) {
         }
 
     }
-    return {
-        questions: updatedTest.questions,
-        testStatus: updatedTest.testStatus,
-        // FIX: UPDATE END DATE ON TIMOUT OR END TEST
-        currentIndex: updatedTest.currentIndex
-    }
+    return updatedTest
 }
