@@ -46,7 +46,10 @@ export async function getResult(testId: string) {
                 }
             }
         })
-
+        if (!result) {
+            console.log(`Error getting result data: ${result}`)
+            throw new Error(`Error getting result data: ${result}`)
+        }
         const correct = result?.questions.filter((q) => q.options.some((o) => o.userSelected && o.correct));
         const incorrect = result?.questions.filter((q) => q.options.some((o) => o.userSelected && !o.correct))
         const notAnswered = result?.questions.filter(
@@ -57,8 +60,6 @@ export async function getResult(testId: string) {
         const skipped = result?.questions.filter((q) => q.skip == true);
         const creator = result?.quiz.creator.name;
         const quizName = result?.quiz.name;
-        console.log("skipped", skipped)
-        console.log("notAnswered", notAnswered)
         return {
             correct: correct ?? [],
             incorrect: incorrect ?? [],
