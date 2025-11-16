@@ -1,6 +1,6 @@
 import { ViewResult } from "@/components/pages/result/shareresult"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Loader2, Trophy, View } from "lucide-react"
+import { Loader2, Trophy } from "lucide-react"
 import { Suspense } from "react"
 
 export default function ResultsPage() {

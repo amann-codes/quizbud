@@ -9,7 +9,6 @@ export async function updateTest({ payload, testId }: { payload: EventPayload, t
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         });
-        console.log("string", JSON.stringify( {payload, res}, null, 3))
         if (!res.ok) throw new Error("Failed to update test");
         return await res.json();
     } catch (err) {

@@ -10,13 +10,28 @@ import {
     SidebarTrigger,
     useSidebar
 } from '@/components/ui/sidebar';
-import { nav } from "./navigation";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton } from '@/components/pages/layout/userbutton';
 import { useSession, signOut } from "next-auth/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { LogOutIcon } from "lucide-react";
+import { ClipboardCheck, History, LogOutIcon, Wand } from "lucide-react";
+
+const nav = [
+    {
+        title: "Generate Quiz",
+        loc: "/",
+        icon: <Wand />
+    }, {
+        title: "Your Quizzes",
+        loc: "/quiz",
+        icon: <History />
+    }, {
+        title: "Test History",
+        icon: <ClipboardCheck />,
+        loc: '/test'
+    }
+]
 
 export function AppSidebar() {
     const pathname = usePathname();
@@ -52,7 +67,7 @@ export function AppSidebar() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton className="w-full">
-                            <UserButton isOpen={isOpen} />
+                            <UserButton />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     {session?.user && (
