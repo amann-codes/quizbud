@@ -1,3 +1,4 @@
+import { TestStatus } from "@prisma/client";
 import z from "zod";
 
 export type Topic = "aptitude" | "logical-reasoning" | "technical-questions" | "verbal" | "quants"
@@ -23,19 +24,22 @@ export type Option = {
     id: string
     option: string
     correct: boolean
+    userSelected: boolean | null
 }
 
 export type Question = {
     id: string
     question: string
+    skip: boolean
     options: Option[]
-    explanation: string
+    explanation: string | null
 }
 
-export type TestInstanceQuestion = {
+export type QuestionInstaceInTest = {
     id: string
     question: string
     options: Option[]
+    skip: boolean;
     userSelection: boolean
     selectedAt: Date
     explanation: string
@@ -67,7 +71,13 @@ export type QuizInstanceInTest = {
 
 export type Test = {
     id: string;
-    name: string;
+    currentIndex: number;
+    testStatus: TestStatus;
+    startedAt: Date;
+    quiz: {
+        name: string
+    };
+    endedAt: Date | null;
     timeLimit: number;
     questions: Question[];
 }
@@ -98,12 +108,12 @@ export type quizBody = {
 }
 
 export const EventSchema = z.object({
-    eventType: z.enum(["SELECT", "SKIP", "NAVIGATE", "TIMEOUT", "HARDRESET", "RESET"]),
+    eventType: z.enum(["SELECT", "SKIP", "SUBMIT", "NAVIGATE", "TIMEOUT", "HARDRESET", "RESET"]),
     questionId: z.string().optional(),
     optionId: z.string().optional(),
     questionIndex: z.number().int().min(0),
     idempotencyKey: z.string(),
-    clientTimestamp: z.string().optional(),
+    clientTimestamp: z.coerce.date(),
 });
 
 export type EventPayload = z.infer<typeof EventSchema>
