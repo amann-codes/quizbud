@@ -148,7 +148,7 @@ export const ViewResult = () => {
               <Trophy className={`w-12 h-12 ${percentage >= 70 ? "text-green-600" : percentage >= 50 ? "text-yellow-600" : "text-red-600"}`} />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold">{test.name}</CardTitle>
+          <CardTitle className="text-3xl font-bold">{test.quiz.name}</CardTitle>
           <div className="flex flex-wrap justify-center gap-6 mt-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
