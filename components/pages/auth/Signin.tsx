@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface SignInForm {
   email: string;
@@ -25,6 +26,7 @@ export default function Signin() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignInForm>();
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data: SignInForm) => {
     try {
@@ -78,19 +80,33 @@ export default function Signin() {
             <Label htmlFor="password" className="text-xs font-medium">
               Password
             </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••"
-              className="text-xs h-9"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
-              })}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••"
+                className="text-xs h-9 pr-10"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-destructive text-xs">{errors.password.message}</p>
             )}
