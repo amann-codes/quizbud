@@ -174,7 +174,7 @@ export default function QuizCard({ id }: { id: string }) {
                                 ))}
                             </>
                         ) : (
-                            getQuizQuery.data?.questions.map((q) => (
+                            getQuizQuery.data?.questions.slice(0, 3).map((q) => (
                                 <li
                                     key={q.id}
                                     className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground"
