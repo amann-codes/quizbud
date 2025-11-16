@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const request = await req.json();
-        console.log('request', request)
         const id = (await params).id;
 
         if (!id) throw new Error('ID IS REQUIRED TO UPDATE TEST');
@@ -16,20 +15,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         const payload: EventPayload = EventSchema.parse(request)
 
         await prisma.$transaction(async (tx) => {
-            const event = await tx.testEvent.create({
-                data: {
-                    eventType: payload.eventType,
-                    payload: {
-                        ...payload,
-                        serverTimestamp: new Date(),
-                    },
-                    testId: id,
-                    idempotencyKey: payload.idempotencyKey,
-                },
-            });
 
             const test = await tx.test.findUnique({
-                where: { id }, select: {
+                where:
+                    { id },
+                select: {
                     id: true,
                     startedAt: true,
                     testStatus: true,
@@ -44,13 +34,60 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                     endedAt: true
                 }
             });
+
             if (!test) throw new Error(`TEST NOT FOUND WITH THE ID: ${id}`);
 
-            const userUpdatedTest = applyEventAndUpdatePayload(test, payload);
+            const event = await tx.testEvent.create({
+                data: {
+                    eventType: payload.eventType,
+                    clientTimeStamp: payload.clientTimestamp,
+                    serverTimeStamp: new Date(),
+                    payload: {
+                        ...payload,
+                    },
+                    testId: id,
+                    idempotencyKey: payload.idempotencyKey,
+                },
+            });
+
+            const unprocessedEvents = await tx.testEvent.findMany({
+                where: {
+                    AND: {
+                        testId: id,
+                        processed: false
+                    }
+                }, orderBy: {
+                    clientTimeStamp: "asc"
+                },
+            })
+
+
+            let currentTest = test;
+
+            for (const unprocessedEvent of unprocessedEvents) {
+                const payload = EventSchema.parse(unprocessedEvent.payload);
+                currentTest = applyEventAndUpdatePayload(currentTest, payload);
+                await tx.testEvent.update({
+                    where: {
+                        id: unprocessedEvent.id
+                    },
+                    data: { processed: true }
+                })
+            }
+
+            if (test.testStatus == "COMPLETED") {
+                console.log("user updating after test completion")
+                return;
+            }
 
             await tx.test.update({
                 where: { id },
-                data: userUpdatedTest,
+                data: {
+                    questions: currentTest.questions,
+                    currentIndex: currentTest.currentIndex,
+                    testStatus: currentTest.testStatus,
+                    endedAt: currentTest.endedAt,
+                },
             });
 
             await tx.testEvent.update({
