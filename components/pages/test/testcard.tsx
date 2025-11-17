@@ -255,15 +255,15 @@ export function TestCard({ id }: { id: string }) {
                         {currentQuestion.options.map((option) => {
                             const isSelected = option.userSelected || option.id === selectedOption;
                             return (
-                                <Button
+                                <Card
                                     key={option.id}
                                     onClick={() => handleSelectOption(option.id)}
-                                    variant={isSelected ? "default" : "outline"}
-                                    className="h-auto py-3 sm:py-4 text-left justify-start font-normal text-sm sm:text-base"
-                                    aria-pressed={isSelected}
+                                    className={`h-auto py-3 sm:py-4 text-left justify-start font-normal text-sm sm:text-base ${isSelected ? "bg-primary text-secondary" : "bg-secondary text-primary"}`} aria-pressed={isSelected}
                                 >
-                                    {option.option}
-                                </Button>
+                                    <CardContent>
+                                        {option.option}
+                                    </CardContent>
+                                </Card>
                             );
                         })}
                     </div>
