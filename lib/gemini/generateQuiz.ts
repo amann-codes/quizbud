@@ -3,7 +3,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { randomUUID } from "crypto";
 import {
-    Quiz,
     GenerateQuizParams,
     Question,
     Option,
@@ -97,7 +96,7 @@ export async function generateQuiz(
         const jsonText = response.text();
 
 
-        let generatedQuiz: GeminiQuizResponse = JSON.parse(jsonText);
+        const generatedQuiz: GeminiQuizResponse = JSON.parse(jsonText);
 
         if (generatedQuiz.questions.length > numQuestions) {
             console.log(`AI returned ${generatedQuiz.questions.length} questions, slicing to ${numQuestions}.`);

@@ -92,17 +92,6 @@ export function TestCard({ id }: { id: string }) {
         }
     }, [testState])
 
-    const handleTimeOut = () => {
-        const payload: EventPayload = {
-            eventType: "TIMEOUT",
-            idempotencyKey: getUUID(),
-            clientTimestamp: new Date(),
-            questionIndex: currentQuestionIndex
-        }
-        updateTestMutation.mutate({ payload, testId: id })
-        setTestState("COMPLETED")
-    }
-
     if (getTestQuery.isPending) {
         return (
             <div className="min-h-dvh bg-background text-foreground flex items-center justify-center p-4">

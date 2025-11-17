@@ -15,7 +15,6 @@ export const DIFFICULTIES: { label: string; value: Difficulty }[] = [
 ]
 
 export const TIME_LIMITS: { label: string; value: TimeLimit }[] = [
-    { label: "No limit", value: "no-limit" },
     { label: "15 min", value: "15m" },
     { label: "30 min", value: "30m" },
     { label: "45 min", value: "45m" },
