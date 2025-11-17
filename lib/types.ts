@@ -5,7 +5,7 @@ export type Topic = "aptitude" | "logical-reasoning" | "technical-questions" | "
 
 export type Difficulty = "easy" | "medium" | "hard"
 
-export type TimeLimit = "no-limit" | "15m" | "30m" | "45m" | "60m"
+export type TimeLimit = "15m" | "30m" | "45m" | "60m"
 
 export type QuesitonsLimit = "10q" | "15q" | "30q"
 
@@ -117,3 +117,16 @@ export const EventSchema = z.object({
 });
 
 export type EventPayload = z.infer<typeof EventSchema>
+
+export interface GenerateQuizParams {
+    topics: Topic[]; // Changed from topic: Topic
+    difficulty: Difficulty;
+    questionCount: QuesitonsLimit | number; // Now allows a custom number
+    timeLimit: TimeLimit; // Added timeLimit
+}
+
+export interface QuizQuestionOption {
+    id: string;
+    option: string;
+    correct: boolean;
+}

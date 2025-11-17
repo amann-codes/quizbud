@@ -6,20 +6,25 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Topic, Difficulty, TimeLimit } from "@/lib/types"
+import { Input } from "@/components/ui/input"
+import { Topic, Difficulty, TimeLimit, QuesitonsLimit } from "@/lib/types"
 import { TOPICS, DIFFICULTIES, TIME_LIMITS, QUESTION_COUNTS } from "@/lib/tags"
 import { useMutation } from "@tanstack/react-query"
 import { createQuiz } from "@/actions/createQuiz"
 import { ChevronRight, ChevronLeft } from "lucide-react"
+import { toast } from "sonner"
 
 type Step = 1 | 2 | 3
+
+const MIN_CUSTOM_QUESTIONS = 5
+const MAX_CUSTOM_QUESTIONS = 50
 
 export default function QuizForm() {
     const [step, setStep] = useState<Step>(1)
     const [selectedTopics, setSelectedTopics] = useState<Set<Topic>>(new Set())
-    const [difficulty, setDifficulty] = useState<Difficulty | null>(null)
-    const [timeLimit, setTimeLimit] = useState<TimeLimit | null>(null)
-    const [questionCount, setQuestionCount] = useState<string | null>(null)
+    const [difficulty, setDifficulty] = useState<Difficulty | undefined>()
+    const [timeLimit, setTimeLimit] = useState<TimeLimit | undefined>()
+    const [questionCount, setQuestionCount] = useState<QuesitonsLimit | undefined>()
     const [customCount, setCustomCount] = useState<string>("")
 
     const totalSteps = 3
@@ -33,21 +38,18 @@ export default function QuizForm() {
         })
     }
 
-    const selectSingle = <T extends string>(setter: (v: T | null) => void, current: T | null, value: T) => {
-        setter(current === value ? null : value)
+    const selectSingle = <T extends string>(setter: (v: T | undefined) => void, current: T | undefined, value: T) => {
+        setter(current === value ? undefined : value)
     }
-
-    const isCustomSelected = questionCount === "custom"
-    const resolvedCount = isCustomSelected ? customCount : (questionCount ?? "")
 
     const createQuizQuery = useMutation({
         mutationFn: createQuiz,
         onSuccess: (id) => {
             window.location.href = `/quiz/${id}`
         },
-        onError: (err) => {
-            console.error("Failed to generate quiz:", err)
-        },
+        onError: (error) => {
+            toast(error.message)
+        }
     })
 
     const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps) as Step)
@@ -55,20 +57,40 @@ export default function QuizForm() {
 
     const canProceed = () => {
         switch (step) {
-            case 1: return selectedTopics.size > 0
-            case 2: return !!difficulty || !!timeLimit
-            case 3: return !!questionCount && (!isCustomSelected || customCount.trim().length > 0)
-            default: return false
+            case 1:
+                return selectedTopics.size > 0
+            case 2:
+                return !!difficulty && !!timeLimit
+            case 3:
+                const custom = parseInt(customCount)
+                const validCustom = !isNaN(custom) && custom >= MIN_CUSTOM_QUESTIONS && custom <= MAX_CUSTOM_QUESTIONS
+                return !!questionCount || validCustom
+            default:
+                return false
         }
     }
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        createQuizQuery.mutate()
+        if (!canProceed() || !difficulty || !timeLimit) return
+
+        const topicsArray = Array.from(selectedTopics)
+
+        const finalQuestionCount = customCount
+            ? parseInt(customCount)
+            : questionCount!
+
+        createQuizQuery.mutate({
+            topics: topicsArray,
+            difficulty,
+            timeLimit,
+            questionCount: finalQuestionCount
+        })
     }
 
     return (
-        <div className="h-full w-full flex items-center justify-center p-4 bg-background">
+        <div className={`h-full w-full flex items-center justify-center p-4 bg-background ${createQuizQuery.isPending ? "pointer-events-none opacity-50 select-none" : ""}`}
+            aria-disabled={createQuizQuery.isPending} >
             <Card className="w-full max-w-3xl border bg-card text-card-foreground">
                 <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
@@ -80,10 +102,10 @@ export default function QuizForm() {
                 <CardContent className="p-6">
                     <form onSubmit={onSubmit} className="flex flex-col gap-6">
                         {step === 1 && (
-                            <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
+                            <div className="space-y-4">
                                 <div className="flex flex-col gap-2">
                                     <Label className="text-xl font-semibold">Select Topics</Label>
-                                    <p className="text-sm text-muted-foreground">Choose one or more topics to focus your quiz.</p>
+                                    <p className="text-sm text-muted-foreground">Choose one or more topics.</p>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {TOPICS.map(t => {
@@ -105,11 +127,11 @@ export default function QuizForm() {
                         )}
 
                         {step === 2 && (
-                            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <div className="space-y-6">
                                 <div className="space-y-4">
                                     <div className="flex flex-col gap-2">
                                         <Label className="text-xl font-semibold">Difficulty & Time</Label>
-                                        <p className="text-sm text-muted-foreground">Set challenge level and time constraint.</p>
+                                        <p className="text-sm text-muted-foreground">Set challenge level and duration.</p>
                                     </div>
                                     <div className="space-y-3">
                                         <Label className="text-sm font-medium">Difficulty</Label>
@@ -154,10 +176,10 @@ export default function QuizForm() {
                         )}
 
                         {step === 3 && (
-                            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <div className="space-y-6">
                                 <div className="flex flex-col gap-2">
                                     <Label className="text-xl font-semibold">Number of Questions</Label>
-                                    <p className="text-sm text-muted-foreground">Choose how many questions to include.</p>
+                                    <p className="text-sm text-muted-foreground">Choose a preset count or enter a custom amount (between {MIN_CUSTOM_QUESTIONS} and {MAX_CUSTOM_QUESTIONS}).</p>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {QUESTION_COUNTS.map(t => {
@@ -175,29 +197,23 @@ export default function QuizForm() {
                                         )
                                     })}
                                 </div>
-                                {isCustomSelected && (
-                                    <div className="flex flex-col gap-2">
-                                        <Label htmlFor="customCount">Custom count</Label>
-                                        <input
-                                            id="customCount"
-                                            type="number"
-                                            min="1"
-                                            value={customCount}
-                                            onChange={e => setCustomCount(e.target.value)}
-                                            className="rounded-md border border-input bg-background px-3 py-2 text-sm w-32"
-                                            placeholder="e.g. 25"
-                                        />
-                                    </div>
-                                )}
+                                <div className="space-y-3 pt-2">
+                                    <Label className="text-sm font-medium">Or enter a custom amount</Label>
+                                    <Input
+                                        type="number"
+                                        placeholder={`e.g., ${MIN_CUSTOM_QUESTIONS + 5}`}
+                                        min={MIN_CUSTOM_QUESTIONS}
+                                        max={MAX_CUSTOM_QUESTIONS}
+                                        value={customCount}
+                                        onChange={(e) => {
+                                            setCustomCount(e.target.value);
+                                            setQuestionCount(undefined);
+                                        }}
+                                        className="w-48"
+                                    />
+                                </div>
                             </div>
                         )}
-
-                        {[...selectedTopics].map(topic => (
-                            <input key={topic} type="hidden" name="topics[]" value={topic} />
-                        ))}
-                        <input type="hidden" name="difficulty" value={difficulty ?? ""} />
-                        <input type="hidden" name="timeLimit" value={timeLimit ?? ""} />
-                        <input type="hidden" name="questionCount" value={resolvedCount} />
 
                         <div className="flex items-center justify-between mt-6">
                             <Button
@@ -233,6 +249,6 @@ export default function QuizForm() {
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }
