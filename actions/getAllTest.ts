@@ -21,6 +21,9 @@ export async function getAllTest() {
                 },
                 id: true,
                 timeLimit: true
+            },
+            orderBy: {
+                createdAt: "desc"
             }
         })
         if (!test) {

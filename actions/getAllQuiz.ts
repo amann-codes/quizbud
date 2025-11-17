@@ -8,7 +8,9 @@ export async function getAllQuiz() {
         const { user } = await getSession();
         const quiz = await prisma.quiz.findMany({
             where: {
-                creatorId: user.id
+                creatorId: user.id,
+            }, orderBy: {
+                createdAt: "desc"
             }
         })
         if (!quiz) {
