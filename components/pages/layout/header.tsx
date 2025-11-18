@@ -54,7 +54,7 @@ export function Header() {
                                     : 'text-muted-foreground hover:text-foreground'
                             )}
                         >
-                            <span>{item.label.split(' ')[0]}</span>
+                            <span>{item.label}</span>
                             {pathname === item.href && (
                                 <div className="h-0.5 w-8 rounded-full bg-primary" />
                             )}

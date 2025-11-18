@@ -10,10 +10,11 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
+import { toHMS } from "@/lib/utils"
 
 export function Quizzes() {
     const [isStarting, setIsStarting] = useState(false)
-    
+
     const getQuizQuery = useQuery({
         queryKey: ["quiz"],
         queryFn: getAllQuiz,
@@ -114,6 +115,7 @@ interface QuizCardProps {
 
 const QuizCard = ({ id, name, questions, timeLimit, setIsStarting }: QuizCardProps) => {
     const router = useRouter()
+    const { h, m } = toHMS(timeLimit * 60000)
     const createQuizQuery = useMutation({
         mutationFn: () => createTest(id),
         onMutate: () => setIsStarting(true),
@@ -154,7 +156,7 @@ const QuizCard = ({ id, name, questions, timeLimit, setIsStarting }: QuizCardPro
                 </div>
                 <div className="flex items-center gap-2">
                     <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-                    <span>{timeLimit} min</span>
+                    <span>{h} minutes</span>
                 </div>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row w-full gap-2 pt-3">

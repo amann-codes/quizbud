@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { QuizInstanceInTest } from '@/lib/types';
 import { useState } from 'react';
+import { toHMS } from '@/lib/utils';
 
 export function Tests() {
     const [isStarting, setIsStarting] = useState(false);
@@ -111,6 +112,7 @@ interface QuizCardProps {
 
 const TestCard = ({ id, quiz, questions, timeLimit, setIsStarting }: QuizCardProps) => {
     const router = useRouter();
+    const { h, m } = toHMS(timeLimit * 60000);
     const createTestQuery = useMutation({
         mutationFn: () => createTest(quiz.id),
         onMutate: () => setIsStarting(true),
@@ -165,7 +167,7 @@ const TestCard = ({ id, quiz, questions, timeLimit, setIsStarting }: QuizCardPro
                 </div>
                 <div className="flex items-center gap-2">
                     <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-                    <span>{timeLimit} min</span>
+                    <span>{h}{" "}minutes</span>
                 </div>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row w-full gap-2 pt-3">
