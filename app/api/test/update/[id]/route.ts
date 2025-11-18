@@ -14,11 +14,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         const events: EventPayload[] = EventSchema.array().parse(request)
 
+        const event = await prisma.testEvent.createMany({
+            data: events.map((payload) => ({
+                eventType: payload.eventType,
+                clientTimeStamp: payload.clientTimestamp,
+                serverTimeStamp: new Date(),
+                payload: {
+                    ...payload,
+                },
+                testId: id,
+                idempotencyKey: payload.idempotencyKey,
+            }))
+        });
         await prisma.$transaction(async (tx) => {
-
             const test = await tx.test.findUnique({
-                where:
-                    { id },
+                where: { id },
                 select: {
                     id: true,
                     startedAt: true,
@@ -26,71 +36,46 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                     questions: true,
                     currentIndex: true,
                     timeLimit: true,
-                    quiz: {
-                        select: {
-                            name: true
-                        }
-                    },
-                    endedAt: true
+                    quiz: { select: { name: true } },
+                    endedAt: true,
                 }
-            });
-
-            if (!test) throw new Error(`TEST NOT FOUND WITH THE ID: ${id}`);
-
-            if (test.testStatus == "COMPLETED") {
-                console.log("user updating after test completion")
-                return;
-            }
-
-            const event = await tx.testEvent.createMany({
-                data: events.map((payload) => ({
-                    eventType: payload.eventType,
-                    clientTimeStamp: payload.clientTimestamp,
-                    serverTimeStamp: new Date(),
-                    payload: {
-                        ...payload,
-                    },
-                    testId: id,
-                    idempotencyKey: payload.idempotencyKey,
-                }))
-            });
-
-            const unprocessedEvents = await tx.testEvent.findMany({
-                where: {
-                    AND: {
-                        testId: id,
-                        processed: false
-                    }
-                }, orderBy: {
-                    clientTimeStamp: "asc"
-                },
             })
 
+            if (!test) throw new Error("TEST NOT FOUND")
+            if (test.testStatus === "COMPLETED") return
 
-            let currentTest = test;
+            const unprocessed = await tx.testEvent.findMany({
+                where: {
+                    testId: id,
+                    processed: false
+                },
+                orderBy: { clientTimeStamp: "asc" }
+            })
 
-            for (const unprocessedEvent of unprocessedEvents) {
-                const payload = EventSchema.parse(unprocessedEvent.payload);
-                currentTest = applyEventAndUpdatePayload(currentTest, payload);
-                await tx.testEvent.update({
-                    where: {
-                        id: unprocessedEvent.id
-                    },
-                    data: { processed: true }
-                })
+            let updated = test
+
+            for (const evt of unprocessed) {
+                const payload = EventSchema.parse(evt.payload)
+                updated = applyEventAndUpdatePayload(updated, payload)
             }
 
             await tx.test.update({
                 where: { id },
                 data: {
-                    questions: currentTest.questions,
-                    currentIndex: currentTest.currentIndex,
-                    testStatus: currentTest.testStatus,
-                    endedAt: currentTest.endedAt,
-                },
-            });
+                    questions: updated.questions,
+                    currentIndex: updated.currentIndex,
+                    testStatus: updated.testStatus,
+                    endedAt: updated.endedAt
+                }
+            })
 
-        });
+            await tx.testEvent.updateMany({
+                where: {
+                    id: { in: unprocessed.map(e => e.id) }
+                },
+                data: { processed: true }
+            })
+        })
 
         return NextResponse.json({ message: "test updated" });
 
