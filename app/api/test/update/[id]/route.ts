@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         if (!id) throw new Error('ID IS REQUIRED TO UPDATE TEST');
 
-        const payload: EventPayload = EventSchema.parse(request)
+        const events: EventPayload[] = EventSchema.array().parse(request)
 
         await prisma.$transaction(async (tx) => {
 
@@ -37,8 +37,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
             if (!test) throw new Error(`TEST NOT FOUND WITH THE ID: ${id}`);
 
-            const event = await tx.testEvent.create({
-                data: {
+            if (test.testStatus == "COMPLETED") {
+                console.log("user updating after test completion")
+                return;
+            }
+
+            const event = await tx.testEvent.createMany({
+                data: events.map((payload) => ({
                     eventType: payload.eventType,
                     clientTimeStamp: payload.clientTimestamp,
                     serverTimeStamp: new Date(),
@@ -47,7 +52,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                     },
                     testId: id,
                     idempotencyKey: payload.idempotencyKey,
-                },
+                }))
             });
 
             const unprocessedEvents = await tx.testEvent.findMany({
@@ -75,11 +80,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 })
             }
 
-            if (test.testStatus == "COMPLETED") {
-                console.log("user updating after test completion")
-                return;
-            }
-
             await tx.test.update({
                 where: { id },
                 data: {
@@ -90,10 +90,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 },
             });
 
-            await tx.testEvent.update({
-                where: { id: event.id },
-                data: { processed: true },
-            });
         });
 
         return NextResponse.json({ message: "test updated" });
