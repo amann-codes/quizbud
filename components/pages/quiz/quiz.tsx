@@ -111,15 +111,13 @@ export default function QuizForm() {
                                     {TOPICS.map(t => {
                                         const selected = selectedTopics.has(t.value)
                                         return (
-                                            <Button
+                                            <div
                                                 key={t.value}
-                                                type="button"
-                                                variant="outline"
                                                 onClick={() => toggleTopic(t.value)}
-                                                className={cn("h-10 rounded-full border", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
+                                                className={cn("rounded-full border px-3 py-2 cursor-pointer", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
                                             >
                                                 {t.label}
-                                            </Button>
+                                            </div>
                                         )
                                     })}
                                 </div>
@@ -139,15 +137,13 @@ export default function QuizForm() {
                                             {DIFFICULTIES.map(d => {
                                                 const selected = difficulty === d.value
                                                 return (
-                                                    <Button
+                                                    <div
                                                         key={d.value}
-                                                        type="button"
-                                                        variant="outline"
                                                         onClick={() => selectSingle(setDifficulty, difficulty, d.value)}
-                                                        className={cn("h-10 rounded-full border", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
+                                                        className={cn("rounded-full border px-3 py-2 cursor-pointer", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
                                                     >
                                                         {d.label}
-                                                    </Button>
+                                                    </div>
                                                 )
                                             })}
                                         </div>
@@ -158,15 +154,13 @@ export default function QuizForm() {
                                             {TIME_LIMITS.map(t => {
                                                 const selected = timeLimit === t.value
                                                 return (
-                                                    <Button
+                                                    <div
                                                         key={t.value}
-                                                        type="button"
-                                                        variant="outline"
                                                         onClick={() => selectSingle(setTimeLimit, timeLimit, t.value)}
-                                                        className={cn("h-10 rounded-full border", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
+                                                        className={cn("rounded-full border px-3 py-2 cursor-pointer", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
                                                     >
                                                         {t.label}
-                                                    </Button>
+                                                    </div>
                                                 )
                                             })}
                                         </div>
@@ -185,15 +179,13 @@ export default function QuizForm() {
                                     {QUESTION_COUNTS.map(t => {
                                         const selected = questionCount === t.value
                                         return (
-                                            <Button
+                                            <div
                                                 key={t.value}
-                                                type="button"
-                                                variant="outline"
                                                 onClick={() => { setQuestionCount(t.value); setCustomCount(""); }}
-                                                className={cn("h-10 rounded-full border", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
+                                                className={cn("rounded-full border px-3 py-2 cursor-pointer", selected ? "bg-primary text-primary-foreground border-transparent" : "bg-secondary text-secondary-foreground")}
                                             >
                                                 {t.label}
-                                            </Button>
+                                            </div>
                                         )
                                     })}
                                 </div>
@@ -201,13 +193,27 @@ export default function QuizForm() {
                                     <Label className="text-sm font-medium">Or enter a custom amount</Label>
                                     <Input
                                         type="number"
-                                        placeholder={`e.g., ${MIN_CUSTOM_QUESTIONS + 5}`}
+                                        placeholder={`e.g., ${MIN_CUSTOM_QUESTIONS}`}
                                         min={MIN_CUSTOM_QUESTIONS}
                                         max={MAX_CUSTOM_QUESTIONS}
                                         value={customCount}
                                         onChange={(e) => {
-                                            setCustomCount(e.target.value);
-                                            setQuestionCount(undefined);
+                                            const value = e.target.value
+                                            const num = Number(value)
+                                            if (value === "") {
+                                                setCustomCount("")
+                                                setQuestionCount(undefined)
+                                                return
+                                            }
+                                            if (isNaN(num)) return
+                                            if (num < MIN_CUSTOM_QUESTIONS) {
+                                                setCustomCount(String(MIN_CUSTOM_QUESTIONS))
+                                            } else if (num > MAX_CUSTOM_QUESTIONS) {
+                                                setCustomCount(String(MAX_CUSTOM_QUESTIONS))
+                                            } else {
+                                                setCustomCount(String(num))
+                                            }
+                                            setQuestionCount(undefined)
                                         }}
                                         className="w-48"
                                     />
@@ -221,7 +227,7 @@ export default function QuizForm() {
                                 variant="outline"
                                 onClick={prevStep}
                                 disabled={step === 1}
-                                className={cn(step === 1 && "invisible")}
+                                className={cn("cursor-pointer", step === 1 && "invisible")}
                             >
                                 <ChevronLeft className="mr-2 h-4 w-4" />
                                 Back
@@ -231,6 +237,7 @@ export default function QuizForm() {
                                 <Button
                                     type="button"
                                     onClick={nextStep}
+                                    className="cursor-pointer"
                                     disabled={!canProceed()}
                                 >
                                     Next
@@ -239,7 +246,7 @@ export default function QuizForm() {
                             ) : (
                                 <Button
                                     type="submit"
-                                    className="text-xl px-6"
+                                    className="text-xl px-6 cursor-pointer"
                                     disabled={createQuizQuery.isPending || !canProceed()}
                                 >
                                     {createQuizQuery.isPending ? "Generating..." : "Generate Quiz"}
@@ -249,6 +256,6 @@ export default function QuizForm() {
                     </form>
                 </CardContent>
             </Card>
-        </div >
+        </div>
     )
 }
