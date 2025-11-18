@@ -57,7 +57,6 @@ export function ResultsView({ testId }: { testId: string }) {
     }
 
     const data = getResultQuery.data
-    console.log(data)
     const correct = data.correct ? (Array.isArray(data.correct) ? data.correct : [data.correct]) : []
     const incorrect = data.incorrect ? (Array.isArray(data.incorrect) ? data.incorrect : [data.incorrect]) : []
     const skipped = data.skipped ? (Array.isArray(data.skipped) ? data.skipped : [data.skipped]) : []
