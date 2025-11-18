@@ -258,7 +258,7 @@ export function TestCard({ id }: { id: string }) {
                                 <Card
                                     key={option.id}
                                     onClick={() => handleSelectOption(option.id)}
-                                    className={`h-auto py-3 sm:py-4 text-left justify-start font-normal text-sm sm:text-base ${isSelected ? "bg-primary text-secondary" : "bg-secondary text-primary"}`} aria-pressed={isSelected}
+                                    className={`h-auto py-3 sm:py-4 cursor-pointer text-left justify-start font-normal text-sm sm:text-base ${isSelected ? "bg-green-400 text-secondary" : "bg-secondary text-primary"}`} aria-pressed={isSelected}
                                 >
                                     <CardContent>
                                         {option.option}
@@ -271,15 +271,16 @@ export function TestCard({ id }: { id: string }) {
                     <div className="hidden sm:flex flex-col gap-4 border-t pt-6">
                         <div className="flex justify-between">
                             <div className="flex gap-2">
-                                <Button variant="outline" onClick={handleReset}>
+                                <Button variant="outline" className="cursor-pointer" onClick={handleReset}>
                                     Reset
                                 </Button>
-                                <Button variant="outline" disabled={currentQuestionIndex === test.questions.length - 1} onClick={() => handleSkip(currentQuestion.id)}>
+                                <Button variant="outline" className="cursor-pointer" disabled={currentQuestionIndex === test.questions.length - 1} onClick={() => handleSkip(currentQuestion.id)}>
                                     Skip
                                 </Button>
                             </div>
                             <div className="flex gap-2">
                                 <Button
+                                    className="cursor-pointer"
                                     variant="outline"
                                     onClick={handlePrev}
                                     disabled={currentQuestionIndex === 0}
@@ -290,12 +291,12 @@ export function TestCard({ id }: { id: string }) {
                                     <Button
                                         variant="default"
                                         onClick={handleSubmit}
-                                        className="bg-green-600 hover:bg-green-700"
+                                        className="bg-green-600 cursor-pointer hover:bg-green-700"
                                     >
                                         Submit
                                     </Button>
                                 ) : (
-                                    <Button variant="default" onClick={goToNext}>
+                                    <Button variant="default" className="cursor-pointer" onClick={goToNext}>
                                         Next
                                     </Button>
                                 )}
