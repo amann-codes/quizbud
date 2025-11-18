@@ -22,22 +22,8 @@ export function TestCard({ id }: { id: string }) {
     const rafRef = useRef<number | null>(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const hasTimedOutRef = useRef(false);
-
-    const triggerTimeout = () => {
-        if (hasTimedOutRef.current) return;
-        hasTimedOutRef.current = true;
-
-        const payload: EventPayload = {
-            eventType: "TIMEOUT",
-            idempotencyKey: getUUID(),
-            clientTimestamp: new Date(),
-            questionIndex: currentQuestionIndex,
-        };
-
-        updateTestMutation.mutate({ payload, testId: id });
-        setTestState("COMPLETED");
-    };
-
+    const eventQueRef = useRef<EventPayload[]>([]);
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
 
     const getTestQuery = useQuery({
@@ -52,45 +38,85 @@ export function TestCard({ id }: { id: string }) {
 
     const test = getTestQuery.data;
 
+    const flush = useCallback(() => {
+        const queue = eventQueRef.current
+        if (queue.length === 0) return
+        eventQueRef.current = []
+        updateTestMutation.mutate({ events: queue, testId: id })
+    }, [id, updateTestMutation])
+
+
+    const triggerTimeout = () => {
+        if (hasTimedOutRef.current) return
+        hasTimedOutRef.current = true
+
+        const events: EventPayload[] = [{
+            eventType: "TIMEOUT",
+            idempotencyKey: getUUID(),
+            clientTimestamp: new Date(),
+            questionIndex: currentQuestionIndex
+        }]
+
+        flush()
+        updateTestMutation.mutate({ events, testId: id })
+        setTestState("COMPLETED")
+    }
+
+
     const tick = useCallback(() => {
-        if (startedAtRef.current == null || !test) return;
-        const elapsed = Date.now() - startedAtRef.current;
-        const remaining = Math.max(0, test.timeLimit * 1000 - elapsed);
-        setTimeLeft(remaining);
+        if (!startedAtRef.current || !test) return
+
+        const elapsed = Date.now() - startedAtRef.current
+        const remaining = Math.max(0, test.timeLimit * 1000 - elapsed)
+
+        setTimeLeft(remaining)
+
         if (remaining === 0) {
-            triggerTimeout();
-            return;
+            triggerTimeout()
+            return
         }
-        setTimeLeft(remaining);
-        rafRef.current = requestAnimationFrame(tick);
-    }, [test]);
+
+        rafRef.current = requestAnimationFrame(tick)
+    }, [test])
 
     useEffect(() => {
-        if (!getTestQuery.data?.startedAt) { console.log("getTestQuery.data?.startedAt", getTestQuery.data?.startedAt); return; }
+        if (!test?.startedAt) return
 
-        setTestState(getTestQuery.data.testStatus)
-        setCurrentQuestionIndex(getTestQuery.data?.currentIndex)
-        setSelectedOption(getTestQuery.data.questions[currentQuestionIndex].options.find(o => o.userSelected == true)?.id)
+        startedAtRef.current = new Date(test.startedAt).getTime()
 
-        startedAtRef.current = new Date(getTestQuery.data.startedAt).getTime();
+        const elapsed = Date.now() - startedAtRef.current
+        const remaining = Math.max(0, test.timeLimit * 1000 - elapsed)
+        setTimeLeft(remaining)
 
-        const elapsed = Date.now() - startedAtRef.current;
-        const remaining = Math.max(0, getTestQuery.data.timeLimit * 1000 - elapsed);
-        setTimeLeft(remaining);
-
-        rafRef.current = requestAnimationFrame(tick);
+        rafRef.current = requestAnimationFrame(tick)
 
         return () => {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        };
-    }, [getTestQuery.data?.startedAt]);
+            if (rafRef.current) cancelAnimationFrame(rafRef.current)
+        }
+    }, [test?.startedAt, tick])
 
     useEffect(() => {
-        if (testState == "COMPLETED") {
-            const url = typeof window !== "undefined" ? `${window.location.origin}/result/${id}` : ""
-            router.push(url)
+        if (!test) return
+
+        setTestState(test.testStatus)
+        setCurrentQuestionIndex(test.currentIndex)
+        setSelectedOption(
+            test.questions[test.currentIndex]
+                ?.options.find(o => o.userSelected)?.id
+        )
+    }, [test])
+
+    useEffect(() => {
+        if (testState === "COMPLETED") {
+            router.push(`/result/${id}`)
         }
     }, [testState])
+
+    useEffect(() => {
+        const interval = setInterval(flush, 5000)
+        return () => clearInterval(interval)
+    }, [flush])
+
 
     if (getTestQuery.isPending) {
         return (
@@ -153,8 +179,7 @@ export function TestCard({ id }: { id: string }) {
                 idempotencyKey: getUUID(),
                 questionIndex: nextIndex
             };
-
-            updateTestMutation.mutate({ payload, testId: id });
+            eventQueRef.current.push(payload);
         }
     }
 
@@ -170,8 +195,7 @@ export function TestCard({ id }: { id: string }) {
                 idempotencyKey: getUUID(),
                 questionIndex: nextIndex
             };
-
-            updateTestMutation.mutate({ payload, testId: id });
+            eventQueRef.current.push(payload);
         }
     }
 
@@ -186,8 +210,7 @@ export function TestCard({ id }: { id: string }) {
                 idempotencyKey: getUUID(),
                 questionIndex: prevIndex
             };
-
-            updateTestMutation.mutate({ payload, testId: id });
+            eventQueRef.current.push(payload);
         }
     }
 
@@ -199,7 +222,7 @@ export function TestCard({ id }: { id: string }) {
             questionId: currentQuestion.id,
             idempotencyKey: getUUID()
         }
-        updateTestMutation.mutate({ payload, testId: id })
+        eventQueRef.current.push(payload);
     }
 
     const handleSelectOption = (optionId: string) => {
@@ -212,17 +235,19 @@ export function TestCard({ id }: { id: string }) {
             questionIndex: currentQuestionIndex,
             idempotencyKey: getUUID()
         }
-        updateTestMutation.mutate({ payload, testId: id })
+        eventQueRef.current.push(payload);
     }
 
     const handleSubmit = () => {
-        const payload: EventPayload = {
+        setSubmitting(true)
+        const payload: EventPayload[] = [{
             eventType: "SUBMIT",
             questionIndex: currentQuestionIndex,
             clientTimestamp: new Date(),
             idempotencyKey: getUUID(),
-        }
-        updateTestMutation.mutate({ payload, testId: id })
+        }];
+        flush();
+        updateTestMutation.mutate({ events: payload, testId: id })
         setTestState("COMPLETED")
     }
 
@@ -231,8 +256,8 @@ export function TestCard({ id }: { id: string }) {
     const currentQuestion = test.questions[currentQuestionIndex];
 
     return (
-        <div className={`min-h-dvh bg-background text-foreground flex items-center justify-center p-4 sm:p-6 ${updateTestMutation.isPending ? 'opacity-50 pointer-events-none' : ''
-            }`} aria-disabled={updateTestMutation.isPending}>
+        <div className={`min-h-dvh bg-background text-foreground flex items-center justify-center p-4 sm:p-6 ${submitting ? 'opacity-50 pointer-events-none' : ''
+            }`} aria-disabled={submitting}>
             <Card className="w-full max-w-3xl">
                 <CardHeader className="space-y-4 p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -258,7 +283,7 @@ export function TestCard({ id }: { id: string }) {
                                 <Card
                                     key={option.id}
                                     onClick={() => handleSelectOption(option.id)}
-                                    className={`h-auto py-3 sm:py-4 cursor-pointer text-left justify-start font-normal text-sm sm:text-base ${isSelected ? "bg-green-400 text-secondary" : "bg-secondary text-primary"}`} aria-pressed={isSelected}
+                                    className={`h - auto py - 3 sm: py - 4 cursor - pointer text - left justify - start font - normal text - sm sm: text - base ${isSelected ? "bg-green-400 text-secondary" : "bg-secondary text-primary"} `} aria-pressed={isSelected}
                                 >
                                     <CardContent>
                                         {option.option}
@@ -346,6 +371,6 @@ export function TestCard({ id }: { id: string }) {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }
