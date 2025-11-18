@@ -27,8 +27,23 @@ export default function QuizForm() {
     const [questionCount, setQuestionCount] = useState<QuesitonsLimit | undefined>()
     const [customCount, setCustomCount] = useState<string>("")
 
-    const totalSteps = 3
-    const progress = (step / totalSteps) * 100
+    const getCompletionProgress = (): number => {
+        let score = 0
+        if (selectedTopics.size > 0) score += 25
+        if (difficulty) score += 25
+        if (timeLimit) score += 25
+        if (questionCount) {
+            score += 25
+        } else if (customCount) {
+            const n = parseInt(customCount)
+            if (!isNaN(n) && n >= MIN_CUSTOM_QUESTIONS && n <= MAX_CUSTOM_QUESTIONS) {
+                score += 25
+            }
+        }
+        return score
+    }
+
+    const progress = getCompletionProgress()
 
     const toggleTopic = (value: Topic) => {
         setSelectedTopics(prev => {
@@ -52,7 +67,7 @@ export default function QuizForm() {
         }
     })
 
-    const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps) as Step)
+    const nextStep = () => setStep(prev => Math.min(prev + 1, 3) as Step)
     const prevStep = () => setStep(prev => Math.max(prev - 1, 1) as Step)
 
     const canProceed = () => {
@@ -75,10 +90,7 @@ export default function QuizForm() {
         if (!canProceed() || !difficulty || !timeLimit) return
 
         const topicsArray = Array.from(selectedTopics)
-
-        const finalQuestionCount = customCount
-            ? parseInt(customCount)
-            : questionCount!
+        const finalQuestionCount = customCount ? parseInt(customCount) : questionCount!
 
         createQuizQuery.mutate({
             topics: topicsArray,
@@ -95,7 +107,7 @@ export default function QuizForm() {
                 <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-2xl">Create Quiz</CardTitle>
-                        <span className="text-sm text-muted-foreground">Step {step} of {totalSteps}</span>
+                        <span className="text-sm text-muted-foreground">Step {step} of 3</span>
                     </div>
                     <Progress value={progress} className="h-2 mt-3" />
                 </CardHeader>
@@ -233,7 +245,7 @@ export default function QuizForm() {
                                 Back
                             </Button>
 
-                            {step < totalSteps ? (
+                            {step < 3 ? (
                                 <Button
                                     type="button"
                                     onClick={nextStep}
