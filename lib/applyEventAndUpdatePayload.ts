@@ -51,7 +51,6 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload): T
             updatedTest.currentIndex = payload.questionIndex
         }
         case "TIMEOUT": {
-            console.log("timeout")
             updatedTest.testStatus = "COMPLETED";
             updatedTest.endedAt = payload.clientTimestamp;
             break;
@@ -66,7 +65,6 @@ export function applyEventAndUpdatePayload(test: Test, payload: EventPayload): T
                 })),
             }));
             updatedTest.currentIndex = 0;
-            // updatedTest.endedAt = null;
             break;
         }
         case "RESET": {

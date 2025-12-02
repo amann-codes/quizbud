@@ -11,7 +11,7 @@ import { Topic, Difficulty, TimeLimit, QuesitonsLimit } from "@/lib/types"
 import { TOPICS, DIFFICULTIES, TIME_LIMITS, QUESTION_COUNTS } from "@/lib/tags"
 import { useMutation } from "@tanstack/react-query"
 import { createQuiz } from "@/actions/createQuiz"
-import { ChevronRight, ChevronLeft } from "lucide-react"
+import { ChevronRight, ChevronLeft, Loader2, Wand2 } from "lucide-react"
 import { toast } from "sonner"
 
 type Step = 1 | 2 | 3
@@ -258,10 +258,15 @@ export default function QuizForm() {
                             ) : (
                                 <Button
                                     type="submit"
-                                    className="text-xl px-6 cursor-pointer"
+                                    className="text-xl px-6 py-2 cursor-pointer"
                                     disabled={createQuizQuery.isPending || !canProceed()}
                                 >
-                                    {createQuizQuery.isPending ? "Generating..." : "Generate Quiz"}
+                                    {createQuizQuery.isPending ? (
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                    ) : (
+                                        <Wand2 className="h-5 w-5" />
+                                    )}
+                                    {createQuizQuery.isPending ? "Generating..." : "Generate"}
                                 </Button>
                             )}
                         </div>

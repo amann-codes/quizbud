@@ -59,6 +59,7 @@ export type Quiz = {
 export type QuizInstanceInTest = {
     id: string
     name: string;
+    timeLimit: number;
     creator: {
         id: string;
         createdAt: Date;
@@ -75,10 +76,10 @@ export type Test = {
     testStatus: TestStatus;
     startedAt: Date;
     quiz: {
-        name: string
+        name: string,
+        timeLimit: number
     };
     endedAt: Date | null;
-    timeLimit: number;
     questions: Question[];
 }
 
@@ -129,4 +130,13 @@ export interface QuizQuestionOption {
     id: string;
     option: string;
     correct: boolean;
+}
+
+export interface GetQuizActionResult {
+    id: string;
+    name: string;
+    expect: string;
+    timeLimit: number;
+    creator: { name: string };
+    questions: { id: string }[];
 }

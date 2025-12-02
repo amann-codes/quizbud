@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createTest } from "@/actions/createTest"
-import { Quiz } from "@/lib/types";
+import { GetQuizActionResult } from "@/lib/types";
 
 export default function QuizCard({ id }: { id: string }) {
 
@@ -16,9 +16,8 @@ export default function QuizCard({ id }: { id: string }) {
 
     const getQuizQuery = useQuery({
         queryKey: ['quizData', id],
-        queryFn: (): Promise<Quiz> => getQuiz(id)
+        queryFn: (): Promise<GetQuizActionResult> => getQuiz(id)
     })
-
     const createQuizQuery = useMutation({
         mutationFn: () => createTest(id),
         onSuccess: (testId) => {
@@ -101,13 +100,7 @@ export default function QuizCard({ id }: { id: string }) {
 
                     <div>
                         <Skeleton className="h-7 w-36 mb-4" />
-                        <ul className="space-y-3">
-                            {[1, 2, 3].map((i) => (
-                                <li key={i} className="rounded-md border bg-muted/30 p-4">
-                                    <Skeleton className="h-12 w-full rounded-md" />
-                                </li>
-                            ))}
-                        </ul>
+                        <Skeleton className="h-12 w-full rounded-md" />
                     </div>
                 </section>
             </main>
@@ -134,6 +127,7 @@ export default function QuizCard({ id }: { id: string }) {
                             ? `Created by ${getQuizQuery.data?.creator.name}`
                             : 'Anonymous Creator'}
                     </p>
+
                 </header>
 
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
@@ -161,29 +155,21 @@ export default function QuizCard({ id }: { id: string }) {
                 </div>
 
                 <div>
-                    <h2 className="text-lg font-semibold mb-4">
-                        What to Expect
-                    </h2>
-                    <ul className="space-y-3">
-                        {isLoadingData ? (
-                            <>
-                                {[1, 2, 3].map((i) => (
-                                    <li key={i} className="rounded-md border bg-muted/30 p-4">
-                                        <Skeleton className="bg-gray-300 h-12 w-full rounded-md" />
-                                    </li>
-                                ))}
-                            </>
-                        ) : (
-                            getQuizQuery.data?.questions.slice(0, 3).map((q) => (
-                                <li
-                                    key={q.id}
-                                    className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground"
-                                >
-                                    {q.question}
-                                </li>
-                            ))
-                        )}
-                    </ul>
+                    {
+                        getQuizQuery.data.expect &&
+                        <>
+                            <h2 className="text-lg font-semibold mb-4">
+                                What to Expect
+                            </h2>
+                            <ul className="space-y-3">
+                                {isLoadingData ? (
+                                    <Skeleton className="bg-gray-300 h-12 w-full rounded-md" />
+                                ) : (
+                                    <div className="rounded-md border bg-muted/30 p-4">{getQuizQuery.data.expect}</div>
+                                )}
+                            </ul>
+                        </>
+                    }
                 </div>
             </section>
         </main >
