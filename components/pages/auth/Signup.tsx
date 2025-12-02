@@ -60,6 +60,7 @@ export default function SignUp() {
     }
   }, [error])
 
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="w-full max-w-xs p-5 bg-white border rounded-lg shadow-sm">

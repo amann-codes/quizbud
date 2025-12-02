@@ -2,7 +2,7 @@
 
 import { getLeaderBoard } from "@/actions/getLeaderboard"
 import { useQuery } from "@tanstack/react-query"
-import { ArrowUp, ArrowDown, Minus, AlertCircle, Crown, Medal, Trophy, Users, Circle, CircleSmallIcon } from "lucide-react"
+import { ArrowUp, ArrowDown, AlertCircle, Crown, Medal, Trophy, Users, CircleSmallIcon } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface LeaderboardEntry {
