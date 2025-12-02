@@ -68,13 +68,16 @@ export function Leaderboard() {
                         key={i}
                         className="flex items-center gap-5 rounded-2xl border-2 border-transparent bg-card p-6 shadow-lg"
                     >
-                        <Skeleton className="h-14 w-14 rounded-full" />
+                        <Skeleton className="sm:flex hidden h-14 w-14 rounded-full" />
                         <Skeleton className="h-14 w-14 rounded-2xl" />
                         <div className="flex-1 space-y-3">
-                            <Skeleton className="h-6 w-56" />
+                            <Skeleton className="h-4 w-56" />
                             <Skeleton className="h-4 w-32" />
                         </div>
-                        <Skeleton className="h-10 w-28" />
+                        <div className="flex flex-col items-center gap-2">
+                            <Skeleton className="hidden sm:flex h-8 w-20" />
+                            <Skeleton className="hidden sm:flex h-8 w-10" />
+                        </div>
                     </div>
                 ))}
             </div>
@@ -118,13 +121,13 @@ export function Leaderboard() {
                         )}
 
                         <div className="flex items-center gap-5 p-6">
-                            <div className={`flex h-14 w-14 items-center justify-center rounded-full ${rankStyle.badgeBg} backdrop-blur-sm`}>
+                            <div className={`hidden sm:flex h-14 w-14 items-center justify-center rounded-full ${rankStyle.badgeBg} backdrop-blur-sm`}>
                                 <Icon className={`h-8 w-8 ${rankStyle.text}`} strokeWidth={3} />
                             </div>
 
                             <div
                                 className={`
-                  relative grid h-14 w-14 place-items-center rounded-2xl font-black text-2xl shadow-lg
+                  relative grid h-14 w-14 place-items-center rounded-2xl font-black text-2xl px-5 shadow-lg
                   ${entry.currentRank === 1
                                         ? "bg-gradient-to-br from-yellow-400 to-amber-600 text-white"
                                         : entry.currentRank === 2
@@ -150,7 +153,7 @@ export function Leaderboard() {
                                 )}
                             </div>
 
-                            <div className="text-right">
+                            <div className="text-center">
                                 <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Score</p>
                                 <p className="text-3xl font-extrabold text-foreground">{entry.score.toLocaleString()}</p>
                             </div>

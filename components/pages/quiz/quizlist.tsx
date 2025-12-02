@@ -97,7 +97,7 @@ export function Quizzes() {
     }
 
     return (
-        <main className={`h-full w-full flex flex-col p-4 mt-12 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
+        <main className={`h-full w-full flex flex-col p-4 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
             <h1 className="text-2xl sm:text-3xl font-bold">Quiz Created by You</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 {getQuizQuery.data?.map((q, index) => (

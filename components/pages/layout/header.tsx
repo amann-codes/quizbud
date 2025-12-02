@@ -46,9 +46,12 @@ export function Header() {
                     ))}
                 </div>
                 <div className="flex items-center gap-3">
-                    <Badge variant={'secondary'} className='p-2'>
-                        {score?.score}
-                    </Badge>
+                    {
+                        score?.score &&
+                        <Badge variant={'default'} className='px-3 py-2'>
+                            Your Score {score?.score}
+                        </Badge>
+                    }
                     <UserButton />
                 </div>
             </header>
