@@ -36,26 +36,46 @@ export function Tests() {
     }
     if (getTestQuery.isPending) {
         return (
-            <div className="min-h-dvh w-full flex flex-col p-4 bg-background gap-6 sm:gap-8">
+            <main className="h-full w-full flex flex-col p-4 sm:m-0 mt-12 bg-background gap-6 sm:gap-8">
                 <Skeleton className="h-8 w-48 sm:h-10 sm:w-80" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                        <Card key={i} className="flex flex-col overflow-hidden">
-                            <div className="p-4 sm:p-5 space-y-3 sm:space-y-4">
-                                <Skeleton className="h-5 w-32 sm:h-6 sm:w-40" />
-                                <div className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                                    <Skeleton className="h-4 w-14 sm:w-16" />
-                                    <Skeleton className="h-4 w-16 sm:w-20" />
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="rounded-xl border bg-card p-4 sm:p-6 flex flex-col gap-4 w-full"
+                        >
+                            <div className="flex items-start justify-between w-full">
+                                <Skeleton className="h-6 w-40 sm:h-7 sm:w-64" />
+
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Skeleton className="h-5 w-5" />
                                 </div>
                             </div>
-                            <div className="mt-auto p-4 sm:p-5 flex flex-col sm:flex-row gap-2">
-                                <Skeleton className="h-9 flex-1" />
-                                <Skeleton className="h-9 sm:w-20 flex-1 sm:flex-none" />
+
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-4 flex-shrink-0" />
+                                    <Skeleton className="h-4 w-20" />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-4 flex-shrink-0" />
+                                    <Skeleton className="h-4 w-20" />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-4 flex-shrink-0" />
+                                    <Skeleton className="h-4 w-20" />
+                                </div>
                             </div>
-                        </Card>
+
+                            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                                <Skeleton className="h-10 w-full sm:w-1/2" />
+                                <Skeleton className="h-10 w-full sm:w-1/2" />
+                            </div>
+                        </div>
                     ))}
+
                 </div>
-            </div>
+            </main>
         );
     }
     if (getTestQuery.data?.length === 0) {
@@ -84,7 +104,7 @@ export function Tests() {
         );
     }
     return (
-        <div className={`min-h-dvh w-full flex flex-col p-4 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
+        <div className={`min-h-dvh w-full flex flex-col p-4 mt-12 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
             <h1 className="text-2xl sm:text-3xl font-bold">Your Tests</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 {getTestQuery.data?.map((q, index) => (
@@ -93,7 +113,7 @@ export function Tests() {
                         id={q.id}
                         quiz={q.quiz}
                         questions={q.questions.length}
-                        timeLimit={q.timeLimit}
+                        timeLimit={q.quiz.timeLimit}
                         setIsStarting={setIsStarting}
                     />
                 ))}
@@ -110,9 +130,9 @@ interface QuizCardProps {
     setIsStarting: (value: boolean) => void;
 }
 
-const TestCard = ({ id, quiz, questions, timeLimit, setIsStarting }: QuizCardProps) => {
+const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
     const router = useRouter();
-    const { h, m } = toHMS(timeLimit * 60000);
+    const { h } = toHMS(quiz.timeLimit * 60000);
     const createTestQuery = useMutation({
         mutationFn: () => createTest(quiz.id),
         onMutate: () => setIsStarting(true),
@@ -141,40 +161,55 @@ const TestCard = ({ id, quiz, questions, timeLimit, setIsStarting }: QuizCardPro
     }
 
     return (
-        <Card className="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-md flex flex-col h-full">
-            <CardHeader className="pb-3 flex items-start justify-between">
-                <CardTitle className="flex flex-col sm:flex-row sm:justify-between text-base sm:text-lg font-semibold gap-2 flex-1 cursor-pointer" >
-                    <span className="truncate">{quiz.name}</span>
-                    <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
-                        <UserRound className="h-3.5 w-3.5" />
-                        <span className="truncate">{quiz.creator.name}</span>
-                    </div>
-                </CardTitle>
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 -mr-2"
-                    onClick={handleShare}
-                    disabled={createTestQuery.isPending}
-                >
-                    <Share2 className="h-4 w-4" />
-                </Button>
+        <Card className="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-md flex flex-col h-full w-full">
+            <CardHeader className="pb-3 flex flex-col gap-3">
+                <div className="w-full flex items-start justify-between gap-3">
+                    <CardTitle className="text-base font-semibold text-wrap text-foreground min-w-0">
+                        {quiz.name}
+                    </CardTitle>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 flex-shrink-0"
+                        onClick={handleShare}
+                        disabled={createTestQuery.isPending}
+                    >
+                        <Share2 className="h-4 w-4" />
+                    </Button>
+                </div>
             </CardHeader>
-            <CardContent className="cursor-pointer space-y-2 text-xs sm:text-sm text-muted-foreground flex-1 pb-3">
+
+            <CardContent className="space-y-3 text-xs sm:text-sm text-muted-foreground flex-1">
                 <div className="flex items-center gap-2">
-                    <ClipboardIcon className="h-3.5 w-3.5 flex-shrink-0" />
+                    <UserRound className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate max-w-32">{quiz.creator.name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <ClipboardIcon className="h-4 w-4 flex-shrink-0" />
                     <span>{questions} questions</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-                    <span>{h}{" "}minutes</span>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 flex-shrink-0" />
+                        <span>{h} minutes</span>
+                    </div>
                 </div>
             </CardContent>
-            <CardFooter className="flex flex-col sm:flex-row w-full gap-2 pt-3">
-                <Button onClick={handleStartQuiz} className="w-full sm:w-1/2 text-sm" disabled={createTestQuery.isPending}>
+
+            <CardFooter className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button
+                    onClick={handleStartQuiz}
+                    className="w-full sm:w-1/2 text-sm font-medium"
+                    disabled={createTestQuery.isPending}
+                >
                     {createTestQuery.isPending ? "Starting..." : "Retake"}
                 </Button>
-                <Button onClick={handleViewResult} variant="outline" className="w-full sm:w-1/2 text-sm" disabled={createTestQuery.isPending}>
+                <Button
+                    onClick={handleViewResult}
+                    variant="outline"
+                    className="w-full sm:w-1/2 text-sm font-medium"
+                    disabled={createTestQuery.isPending}
+                >
                     View Result
                 </Button>
             </CardFooter>

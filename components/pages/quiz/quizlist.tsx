@@ -37,26 +37,36 @@ export function Quizzes() {
 
     if (getQuizQuery.isPending) {
         return (
-            <div className="h-full w-full flex flex-col p-4 bg-background gap-6 sm:gap-8">
+            <main className="h-full w-full flex flex-col p-4 sm:m-0 mt-12 bg-background gap-6 sm:gap-8">
                 <Skeleton className="h-8 w-48 sm:h-10 sm:w-80" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                        <Card key={i} className="flex flex-col overflow-hidden">
-                            <div className="p-4 sm:p-5 space-y-3 sm:space-y-4">
-                                <Skeleton className="h-5 w-32 sm:h-6 sm:w-40" />
-                                <div className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                                    <Skeleton className="h-4 w-14 sm:w-16" />
-                                    <Skeleton className="h-4 w-16 sm:w-20" />
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="rounded-xl border bg-card p-4 sm:p-6 flex flex-col gap-4 w-full"
+                        >
+                            <Skeleton className="h-6 w-40 sm:h-7 sm:w-64 mb-4" />
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-4 flex-shrink-0" />
+                                    <Skeleton className="h-4 w-20" />
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-4 flex-shrink-0" />
+                                    <Skeleton className="h-4 w-20" />
                                 </div>
                             </div>
-                            <div className="mt-auto p-4 sm:p-5 flex flex-col sm:flex-row gap-2">
-                                <Skeleton className="h-9 flex-1" />
-                                <Skeleton className="h-9 flex-1 sm:w-20" />
+
+                            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                                <Skeleton className="h-10 w-full sm:w-1/2" />
+                                <Skeleton className="h-10 w-full sm:w-1/2" />
                             </div>
-                        </Card>
+                        </div>
                     ))}
+
                 </div>
-            </div>
+            </main>
         )
     }
 
@@ -87,7 +97,7 @@ export function Quizzes() {
     }
 
     return (
-        <div className={`h-full w-full flex flex-col p-4 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
+        <main className={`h-full w-full flex flex-col p-4 mt-12 bg-background gap-6 sm:gap-8 ${isStarting ? "pointer-events-none opacity-50 select-none" : ""}`}>
             <h1 className="text-2xl sm:text-3xl font-bold">Quiz Created by You</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 {getQuizQuery.data?.map((q, index) => (
@@ -101,7 +111,7 @@ export function Quizzes() {
                     />
                 ))}
             </div>
-        </div>
+        </main>
     )
 }
 
@@ -115,7 +125,7 @@ interface QuizCardProps {
 
 const QuizCard = ({ id, name, questions, timeLimit, setIsStarting }: QuizCardProps) => {
     const router = useRouter()
-    const { h, m } = toHMS(timeLimit * 60000)
+    const { h } = toHMS(timeLimit * 60000)
     const createQuizQuery = useMutation({
         mutationFn: () => createTest(id),
         onMutate: () => setIsStarting(true),
