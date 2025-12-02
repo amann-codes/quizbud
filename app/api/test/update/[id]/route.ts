@@ -1,5 +1,6 @@
 "use server"
 
+import { updateStat } from "@/actions/updateStat";
 import { applyEventAndUpdatePayload } from "@/lib/applyEventAndUpdatePayload";
 import prisma from "@/lib/prisma";
 import { EventPayload, EventSchema } from "@/lib/types";
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 idempotencyKey: payload.idempotencyKey,
             }))
         });
-        await prisma.$transaction(async (tx) => {
+        const transaction = await prisma.$transaction(async (tx) => {
             const test = await tx.test.findUnique({
                 where: { id },
                 select: {
@@ -35,14 +36,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                     testStatus: true,
                     questions: true,
                     currentIndex: true,
-                    timeLimit: true,
-                    quiz: { select: { name: true } },
+                    quiz: { select: { name: true, timeLimit: true } },
                     endedAt: true,
                 }
             })
 
             if (!test) throw new Error("TEST NOT FOUND")
-            if (test.testStatus === "COMPLETED") return
+
+            if (test.testStatus === "COMPLETED") return { completed: test.testStatus === "COMPLETED" }
 
             const unprocessed = await tx.testEvent.findMany({
                 where: {
@@ -75,9 +76,40 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 },
                 data: { processed: true }
             })
+
+            return { completed: updated.testStatus === "COMPLETED" }
         })
 
-        return NextResponse.json({ message: "test updated" });
+        if (transaction?.completed) {
+
+            const test = await prisma.test.findUnique({
+                where: {
+                    id
+                }
+            })
+
+            const unEvaluated = await prisma.test.findMany({
+                where: {
+                    userId: test?.userId,
+                    AND: [
+                        { evaluated: false }
+                    ]
+                }
+            })
+            for (const unE of unEvaluated) {
+                updateStat(unE.id);
+                const update = await prisma.test.update({
+                    where: {
+                        id: unE.id
+                    },
+                    data: {
+                        evaluated: true
+                    }
+                })
+            }
+        }
+
+        return NextResponse.json({ message: "test updated" })
 
     } catch (e) {
         console.error(e);
