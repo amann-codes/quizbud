@@ -16,7 +16,7 @@ import { updateTest } from "@/actions/updateTest"
 export function TestCard({ id }: { id: string }) {
     const router = useRouter();
     const [testState, setTestState] = useState<"COMPLETED" | "IN_PROGRESS">()
-    const [selectedOption, setSelectedOption] = useState<string>()
+    const [selectedOption, setSelectedOption] = useState<string | null>()
     const [timeLeft, setTimeLeft] = useState<number>(0);
     const startedAtRef = useRef<number | null>(null);
     const rafRef = useRef<number | null>(null);
@@ -67,7 +67,7 @@ export function TestCard({ id }: { id: string }) {
         if (!startedAtRef.current || !test) return
 
         const elapsed = Date.now() - startedAtRef.current
-        const remaining = Math.max(0, test.timeLimit * 1000 - elapsed)
+        const remaining = Math.max(0, test.quiz.timeLimit * 1000 - elapsed)
 
         setTimeLeft(remaining)
 
@@ -85,7 +85,7 @@ export function TestCard({ id }: { id: string }) {
         startedAtRef.current = new Date(test.startedAt).getTime()
 
         const elapsed = Date.now() - startedAtRef.current
-        const remaining = Math.max(0, test.timeLimit * 1000 - elapsed)
+        const remaining = Math.max(0, test.quiz.timeLimit * 1000 - elapsed)
         setTimeLeft(remaining)
 
         rafRef.current = requestAnimationFrame(tick)
@@ -215,6 +215,7 @@ export function TestCard({ id }: { id: string }) {
     }
 
     const handleReset = () => {
+        setSelectedOption(null)
         const payload: EventPayload = {
             eventType: "RESET",
             questionIndex: currentQuestionIndex,
@@ -263,12 +264,15 @@ export function TestCard({ id }: { id: string }) {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <CardDescription className="text-base text-center sm:text-left">
                             <CardTitle className="text-xl">{test.quiz.name}</CardTitle>
-                            Question {currentQuestionIndex + 1} of {test.questions.length}
                         </CardDescription>
-                        <div className="font-semibold px-4 py-2 rounded-lg bg-destructive/10 text-destructive self-center sm:self-auto" aria-live="polite">
+                    </div>
+                    <div className="flex w-full items-center justify-between">
+                        Question {currentQuestionIndex + 1} of {test.questions.length}
+                        <div className="w-max font-semibold px-4 py-2 rounded-lg bg-destructive/10 text-destructive self-center sm:self-auto" aria-live="polite">
                             Time Left: {pad(m)}:{pad(s)}
                         </div>
                     </div>
+
                     <Progress value={progress} className="h-2" />
                 </CardHeader>
                 <CardContent className="space-y-6 pt-4 sm:pt-6">
