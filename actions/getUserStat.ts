@@ -1,6 +1,8 @@
 "use server"
 
 import { getSession } from "./getSession";
+import prisma from "@/lib/prisma"
+
 
 export async function getUserStat() {
     try {
