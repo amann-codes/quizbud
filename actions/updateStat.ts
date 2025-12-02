@@ -52,9 +52,9 @@ export async function updateStat(testId: string) {
                 !q.options.some(o => o.userSelected === true)
         )
 
-        await prisma.userStat.upsert({
+        await prisma.userStat.update({
             where: { userId: test.userId },
-            update: {
+            data: {
                 correct: { increment: correct.length },
                 incorrect: { increment: incorrect.length },
                 skipped: { increment: skipped.length },
@@ -62,15 +62,6 @@ export async function updateStat(testId: string) {
                     increment: correct.length * 4 - incorrect.length * 1 - skipped.length * 0.5 - notAnswered.length * 0.5
                 },
             },
-            create: {
-                userId: test.userId,
-                correct: correct.length,
-                incorrect: incorrect.length,
-                skipped: skipped.length,
-                score: correct.length * 4 - incorrect.length * 1 - skipped.length * 0.5 - notAnswered.length * 0.5,
-                currentRank: null,
-                prevRank: null
-            }
         });
 
         const allStats = await prisma.userStat.findMany({
@@ -98,6 +89,8 @@ export async function updateStat(testId: string) {
                     currentRank: newRank,
                 },
             });
+            console.log(`updating rank of ${stat.User?.name} from ${stat.prevRank} to ${stat.currentRank}`)
+            console.log("user stat right now", stat)
         }
 
         return "stat updated"
