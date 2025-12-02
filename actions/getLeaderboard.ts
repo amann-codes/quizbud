@@ -21,7 +21,7 @@ export async function getLeaderBoard() {
 
     return top10.map((stat, index) => ({
         id: stat.id,
-        name: stat.User!.name!,
+        name: stat.User?.name || "Anonymous User",
         score: Number(stat.score),
         currentRank: index + 1,
         previousRank: Number(stat.prevRank ?? stat.currentRank ?? index + 1),
