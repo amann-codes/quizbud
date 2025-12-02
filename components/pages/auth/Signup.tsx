@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { createUser } from "@/actions/createUser";
 import { signIn } from "next-auth/react";
+import { useEffect } from "react";
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
@@ -49,6 +50,15 @@ export default function SignUp() {
   const onSubmit = (data: SignUpBody) => {
     mutation.mutate(data);
   };
+
+  const params = useSearchParams()
+  const error = params.get("error")
+
+  useEffect(() => {
+    if (error === "OAuthAccountNotLinked") {
+      toast.error("This email already exists. Use email and password instead.")
+    }
+  }, [error])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -127,16 +137,17 @@ export default function SignUp() {
         </form>
         <Button
           className="w-full pointer-cursor"
-          onClick={async () => {
-            await signIn("google");
+          onClick={() => {
+            signIn("google", { callbackUrl: "/" });
           }}
         >
           <img
             src="https://authjs.dev/img/providers/google.svg"
             className="w-[18px] mr-3"
-          ></img>
-          Google
+          />
+          Continue with Google
         </Button>
+
       </div>
     </div>
   );

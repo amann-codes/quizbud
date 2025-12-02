@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useEffect, useState } from "react";
 
 interface SignInForm {
   email: string;
@@ -51,6 +50,16 @@ export default function Signin() {
       toast.error("An unexpected error occurred");
     }
   };
+
+  const params = useSearchParams()
+  const error = params.get("error")
+
+  useEffect(() => {
+    if (error === "OAuthAccountNotLinked") {
+      toast.error("This email already exists. Use email and password instead.")
+    }
+  }, [error])
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -133,19 +142,19 @@ export default function Signin() {
             </Link>
           </div>
           <div className="border-t pt-2"></div>
-          <Button
-            className="w-full pointer-cursor"
-            onClick={async () => {
-              await signIn("google");
-            }}
-          >
-            <img
-              src="https://authjs.dev/img/providers/google.svg"
-              className="w-[18px] mr-3"
-            ></img>
-            Google
-          </Button>
         </form>
+        <Button
+          className="w-full pointer-cursor"
+          onClick={() => {
+            signIn("google", { callbackUrl: "/" });
+          }}
+        >
+          <img
+            src="https://authjs.dev/img/providers/google.svg"
+            className="w-[18px] mr-3"
+          />
+          Continue with Google
+        </Button>
       </div>
     </div>
   );

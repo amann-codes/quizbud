@@ -44,7 +44,35 @@ export const authOptions = {
     session: {
         strategy: "jwt"
     },
+    events: {
+        createUser: async ({ user }) => {
+            await prisma.userStat.create({
+                data: {
+                    userId: user.id,
+                    correct: 0,
+                    incorrect: 0,
+                    skipped: 0,
+                    score: 0,
+                    currentRank: null,
+                    prevRank: null,
+                }
+            });
+        },
+    },
     callbacks: {
+        async signIn({ user, account }) {
+            if (account?.provider !== "credentials") {
+                const existing = await prisma.user.findUnique({
+                    where: { email: user.email! },
+                });
+
+                if (existing && existing.password) {
+                    throw new Error("OAuthAccountNotLinked");
+                }
+            }
+            return true;
+        },
+
         jwt: async ({ token }: { user?: User | AdapterUser; token: JWT }): Promise<JWT> => {
             return token;
         },
