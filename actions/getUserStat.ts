@@ -1,6 +1,5 @@
 "use server"
 
-import { NextResponse } from "next/server";
 import { getSession } from "./getSession";
 
 export async function getUserStat() {

@@ -35,6 +35,13 @@ export const createUser = async ({ name, email, password }: { name: string, emai
                 statusText: "Failed to create account"
             })
         }
+
+        const userStat = await prisma.userStat.create({
+            data: {
+                userId: user.id
+            }
+        })
+        
     } catch (error) {
         throw new Error(`Error occured while creating account: ${error}`)
     }

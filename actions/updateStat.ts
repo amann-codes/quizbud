@@ -1,3 +1,5 @@
+import prisma from "@/lib/prisma"
+
 export async function updateStat(testId: string) {
     try {
         const test = await prisma.test.findUnique({
