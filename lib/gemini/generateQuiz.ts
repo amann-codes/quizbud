@@ -12,6 +12,7 @@ import { DIFFICULTIES, TOPICS, TIME_LIMITS } from "../tags";
 
 type GeminiQuizResponse = {
     name: string;
+    expect: string;
     questions: Question[];
 }
 
@@ -59,36 +60,105 @@ export async function generateQuiz(
         const timeLimitLabel =
             TIME_LIMITS.find((t) => t.value === timeLimit)?.label || timeLimit;
 
+        const initialPrompt = `Generate a quiz based on the following parameters:
+- Topics: "${topicLabels}"
+- Difficulty: "${difficultyLabel}"
+- Number of Questions: ${numQuestions}
+- Time Limit: "${timeLimitLabel}" (This is for context only, do not output time in the questions)
 
-        const initialPrompt = `
-      Generate a quiz based on the following parameters:
-      - Topics: "${topicLabels}"
-      - Difficulty: "${difficultyLabel}"
-      - Number of Questions: ${numQuestions}
-      - Time Limit: "${timeLimitLabel}" (This is for quiz context, just generate the questions)
+IMPORTANT RESPONSE FORMAT:
+Your response MUST be a valid JSON object with EXACTLY these keys:
+{
+  "name": "Quiz title",
+  "description": "Short 1–2 sentence description of the quiz",
+  "expect": "Short 2–3 sentence overview of what the user can expect: 
+             difficulty, types of questions, skills being evaluated, 
+             and the nature of this quiz",
+  "questions": [
+      ...questions here...
+  ]
+}
 
-      Your response MUST be a valid JSON object.
-      The root object must have two keys:
-      1. "name": A creative and descriptive quiz title. It should be based on the topics "${topicLabels}" and the difficulty "${difficultyLabel}". (e.g., "${difficultyLabel} ${topicLabels}        Assessment", "${topicLabels} Fundamentals", "Advanced ${topicLabels} Challenge")
-      2. "questions": An array of question objects.
+RULES FOR "name":
+- Make it creative and descriptive.
+- Must combine "${topicLabels}" and "${difficultyLabel}".
 
-      Each object in the "questions" array MUST have this exact structure:
-      {
-        "question": "The question text as a string",
-        "options": [
-          { "option": "Option text 1", "correct": boolean },
-          { "option": "Option text 2", "correct": boolean },
-          { "option": "Option text 3", "correct": boolean },
-          { "option": "Option text 4", "correct": boolean }
-        ],
-        "explanation": "A brief explanation for the correct answer."
-      }
+RULES FOR "description":
+- 1–2 concise sentences explaining the quiz purpose.
 
-      RULES:
-      - Attempt to generate exactly ${numQuestions} questions.
-      - Every question must have exactly 4 options.
-      - Exactly ONE option in each "options" array must have "correct: true".
-    `;
+RULES FOR "expect":
+- 2–3 sentences.
+- MUST describe:
+  - what type of questions appear,
+  - what skills they test,
+  - how the user should think,
+  - what level of challenge to expect.
+
+Example (do not copy exactly):
+"This quiz assesses core reasoning, aptitude, and problem-solving skills through short, concept-focused questions. Expect a mix of logic, numerical puzzles, and applied understanding."
+
+RULES FOR "questions":
+Each question MUST follow this exact shape:
+{
+  "question": "The question text",
+  "options": [
+    { "option": "Option text 1", "correct": boolean },
+    { "option": "Option text 2", "correct": boolean },
+    { "option": "Option text 3", "correct": boolean },
+    { "option": "Option text 4", "correct": boolean }
+  ],
+  "explanation": "A brief explanation for the correct answer."
+}
+
+STRICT REQUIREMENTS:
+- Generate EXACTLY ${numQuestions} questions.
+- Each question must have exactly 4 options.
+- EXACTLY ONE option must have correct: true.
+`
+        // `
+        // Generate a quiz based on the following parameters:
+        // - Topics: "${topicLabels}"
+        // - Difficulty: "${difficultyLabel}"
+        // - Number of Questions: ${numQuestions}
+        // - Time Limit: "${timeLimitLabel}" (This is for context only, do not output time in the questions)
+
+        // IMPORTANT RESPONSE FORMAT:
+        // Your response MUST be a valid JSON object with EXACTLY these keys:
+        // {
+        //   "name": "Quiz title",
+        //   "description": "Short 1–2 sentence description of what users can expect in the quiz",
+        //   "questions": [
+        //       ...questions here...
+        //   ]
+        // }
+
+        // RULES FOR "name":
+        // - Make it creative and descriptive.
+        // - Should reflect BOTH the topic "${topicLabels}" and difficulty "${difficultyLabel}".
+        // - Examples: "${difficultyLabel} ${topicLabels} Assessment", "${topicLabels} Fundamentals", "Advanced ${topicLabels} Challenge"
+
+        // RULES FOR "description":
+        // - MUST be 1–2 concise sentences.
+        // - Should tell learners what type of questions and knowledge are tested.
+
+        // RULES FOR "questions":
+        // Each item in the "questions" array MUST have this exact shape:
+        // {
+        //   "question": "The question text as a string",
+        //   "options": [
+        //     { "option": "Option text 1", "correct": boolean },
+        //     { "option": "Option text 2", "correct": boolean },
+        //     { "option": "Option text 3", "correct": boolean },
+        //     { "option": "Option text 4", "correct": boolean }
+        //   ],
+        //   "explanation": "A brief explanation for the correct answer."
+        // }
+
+        // STRICT REQUIREMENTS:
+        // - Generate EXACTLY ${numQuestions} questions.
+        // - Each question MUST have exactly 4 options.
+        // - EXACTLY ONE option must have "correct": true.
+        // `
 
 
         const result = await model.generateContent(initialPrompt);
@@ -176,9 +246,10 @@ export async function generateQuiz(
 
         const quizData = {
             name: generatedQuiz.name,
+            expect: generatedQuiz.expect,
             questions: finalQuestions,
         };
-
+        console.log("Expected expect value:", generatedQuiz.expect)
         return { data: quizData };
 
     } catch (e) {
