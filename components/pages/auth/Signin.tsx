@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 interface SignInForm {
   email: string;
@@ -131,6 +132,19 @@ export default function Signin() {
               Signup
             </Link>
           </div>
+          <div className="border-t pt-2"></div>
+          <Button
+            className="w-full pointer-cursor"
+            onClick={async () => {
+              await signIn("google");
+            }}
+          >
+            <img
+              src="https://authjs.dev/img/providers/google.svg"
+              className="w-[18px] mr-3"
+            ></img>
+            Google
+          </Button>
         </form>
       </div>
     </div>

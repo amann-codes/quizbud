@@ -2,6 +2,7 @@ import { NextAuthConfig, Session, User } from "next-auth";
 import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { compare } from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { AdapterUser } from "next-auth/adapters";
@@ -9,6 +10,7 @@ import { AdapterUser } from "next-auth/adapters";
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
+        Google,
         Credentials({
             authorize: async (credentials) => {
                 if (!credentials?.email || !credentials?.password) {

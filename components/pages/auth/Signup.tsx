@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { createUser } from "@/actions/createUser";
+import { signIn } from "next-auth/react";
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
@@ -121,7 +122,21 @@ export default function SignUp() {
               Signin
             </Link>
           </div>
+          <div className="border-t pt-2"></div>
+
         </form>
+        <Button
+          className="w-full pointer-cursor"
+          onClick={async () => {
+            await signIn("google");
+          }}
+        >
+          <img
+            src="https://authjs.dev/img/providers/google.svg"
+            className="w-[18px] mr-3"
+          ></img>
+          Google
+        </Button>
       </div>
     </div>
   );
