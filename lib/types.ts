@@ -64,9 +64,9 @@ export type QuizInstanceInTest = {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        image: string | null
         name: string | null;
         email: string;
-        password: string;
     };
 }
 
