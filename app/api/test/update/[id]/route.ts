@@ -92,6 +92,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 where: {
                     userId: test?.userId,
                     AND: [
+                        { testStatus: "COMPLETED" },
                         { evaluated: false }
                     ]
                 }
