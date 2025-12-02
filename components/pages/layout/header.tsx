@@ -17,12 +17,11 @@ const navItems = [
 
 export function Header() {
     const pathname = usePathname()
-    const userScore = useQuery({
+    const getUserScoreQuery = useQuery({
         queryKey: ['score'],
         queryFn: getUserStat
     })
 
-    const score = userScore.data;
     return (
         <>
             <header className="fixed top-0 left-0 right-0 z-50 flex h-12 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
@@ -46,10 +45,9 @@ export function Header() {
                     ))}
                 </div>
                 <div className="flex items-center gap-3">
-                    {
-                        score?.score &&
+                    {getUserScoreQuery.data &&
                         <Badge variant={'default'} className='px-3 py-2'>
-                            Your Score {score?.score}
+                            Your Score {getUserScoreQuery.data.score}
                         </Badge>
                     }
                     <UserButton />
