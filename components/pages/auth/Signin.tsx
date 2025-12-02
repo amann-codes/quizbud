@@ -123,7 +123,7 @@ export default function Signin() {
           </div>
           <Button
             type="submit"
-            className="w-full text-xs text-white h-9 bg-black"
+            className="w-full text-xs text-white h-9 bg-black cursor-pointer"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -144,7 +144,7 @@ export default function Signin() {
           <div className="border-t pt-2"></div>
         </form>
         <Button
-          className="w-full pointer-cursor"
+          className="w-full cursor-pointer"
           onClick={() => {
             signIn("google", { callbackUrl: "/" });
           }}

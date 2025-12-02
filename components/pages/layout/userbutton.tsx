@@ -31,7 +31,7 @@ export function UserButton() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2">
+                <button className="flex items-center gap-2 cursor-pointer">
                     <Avatar className="size-7 rounded-lg">
                         {session.user.image && (
                             <AvatarImage className="border" src={session.user.image} />

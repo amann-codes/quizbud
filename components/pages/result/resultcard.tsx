@@ -183,7 +183,7 @@ export function ResultsView({ testId }: { testId: string }) {
             <div className={`rounded-xl border-2 ${color} ${bgColor} overflow-hidden transition-all`}>
                 <button
                     onClick={() => toggleCategory(category)}
-                    className="w-full p-4 flex items-center justify-between hover:bg-black/5 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-black/5 transition-colors cursor-pointer"
                 >
                     <div className="flex items-center gap-3">
                         {icon}
@@ -203,7 +203,7 @@ export function ResultsView({ testId }: { testId: string }) {
                                 <div key={q.id} className="bg-card rounded-lg border shadow-sm overflow-hidden">
                                     <button
                                         onClick={() => toggleQuestion(q.id)}
-                                        className="w-full p-3 text-left hover:bg-muted/50 transition-colors"
+                                        className="w-full p-3 text-left hover:bg-muted/50 transition-colors cursor-pointer"
                                     >
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">

@@ -170,10 +170,10 @@ const QuizCard = ({ id, name, questions, timeLimit, setIsStarting }: QuizCardPro
                 </div>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row w-full gap-2 pt-3">
-                <Button onClick={handleStartQuiz} className="w-full sm:w-1/2 text-sm" disabled={createQuizQuery.isPending}>
+                <Button onClick={handleStartQuiz} className="w-full sm:w-1/2 text-sm cursor-pointer" disabled={createQuizQuery.isPending}>
                     {createQuizQuery.isPending ? "Starting..." : "Start"}
                 </Button>
-                <Button onClick={handleShare} variant="outline" className="w-full sm:w-1/2 text-sm" disabled={createQuizQuery.isPending}>
+                <Button onClick={handleShare} variant="outline" className="w-full sm:w-1/2 text-sm cursor-pointer" disabled={createQuizQuery.isPending}>
                     Share
                 </Button>
             </CardFooter>

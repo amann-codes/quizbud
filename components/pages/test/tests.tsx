@@ -170,7 +170,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
                     <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 flex-shrink-0"
+                        className="h-8 w-8 flex-shrink-0 cursor-pointer"
                         onClick={handleShare}
                         disabled={createTestQuery.isPending}
                     >
@@ -199,7 +199,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
             <CardFooter className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
                     onClick={handleStartQuiz}
-                    className="w-full sm:w-1/2 text-sm font-medium"
+                    className="w-full sm:w-1/2 text-sm font-medium cursor-pointer"
                     disabled={createTestQuery.isPending}
                 >
                     {createTestQuery.isPending ? "Starting..." : "Retake"}
@@ -207,7 +207,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
                 <Button
                     onClick={handleViewResult}
                     variant="outline"
-                    className="w-full sm:w-1/2 text-sm font-medium"
+                    className="w-full sm:w-1/2 text-sm font-medium cursor-pointer"
                     disabled={createTestQuery.isPending}
                 >
                     View Result

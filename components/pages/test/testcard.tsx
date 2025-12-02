@@ -287,7 +287,7 @@ export function TestCard({ id }: { id: string }) {
                                 <Card
                                     key={option.id}
                                     onClick={() => handleSelectOption(option.id)}
-                                    className={`h - auto py - 3 sm: py - 4 cursor - pointer text - left justify - start font - normal text - sm sm: text - base ${isSelected ? "bg-green-400 text-secondary" : "bg-secondary text-primary"} `} aria-pressed={isSelected}
+                                    className={`h-auto py-3 sm:py-4 cursor-pointer text-left justify-start font-normal text-sm sm:text-base ${isSelected ? "bg-green-400 text-secondary" : "bg-secondary text-primary"} `} aria-pressed={isSelected}
                                 >
                                     <CardContent>
                                         {option.option}

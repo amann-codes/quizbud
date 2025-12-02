@@ -133,7 +133,7 @@ export default function QuizCard({ id }: { id: string }) {
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
                     <Button
                         onClick={handleStartQuiz}
-                        className="w-full sm:w-auto gap-2 px-6 py-3"
+                        className="w-full sm:w-auto gap-2 px-6 py-3 cursor-pointer"
                         disabled={isCreatingTest}
                     >
                         {isCreatingTest ? (
@@ -146,7 +146,7 @@ export default function QuizCard({ id }: { id: string }) {
                     <Button
                         onClick={handleShare}
                         variant="outline"
-                        className="w-full sm:w-auto gap-2 px-6 py-3"
+                        className="w-full sm:w-auto gap-2 px-6 py-3 cursor-pointer"
                         disabled={isCreatingTest}
                     >
                         <Share2 className="h-5 w-5" />

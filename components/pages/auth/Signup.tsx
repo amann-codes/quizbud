@@ -115,7 +115,7 @@ export default function SignUp() {
 
           <Button
             type="submit"
-            className="w-full text-xs h-9"
+            className="w-full text-xs h-9 cursor-pointer"
             disabled={mutation.isPending}           >
             {mutation.isPending ? (
               <>
