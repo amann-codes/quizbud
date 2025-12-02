@@ -23,6 +23,7 @@ model User {
   createdQuizzes    Quiz[]       @relation("QuizCreator")
   tests             Test[]
   accessibleQuizzes QuizAccess[]
+  userStats         userStat[]
 }
 
 model Quiz {
@@ -61,12 +62,11 @@ model Test {
   questions    Question[]
   currentIndex Int        @default(0) @map("current_index")
   testStatus   TestStatus @default(IN_PROGRESS) @map("test_status")
-  timeLimit    Int        @map("time_limit")
+  evaluated    Boolean?   @default(false)
   endedAt      DateTime?  @map("ended_at")
   startedAt    DateTime   @default(now()) @map("started_at")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
-  results      Result[]
 }
 
 model TestEvent {
@@ -81,14 +81,18 @@ model TestEvent {
   processed       Boolean   @default(false)
 }
 
-model Result {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  test          Test     @relation(fields: [testId], references: [id])
-  testId        String   @map("test_id") @db.ObjectId
-  totalQuestion Int      @map("total_questions")
-  scored        Int
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+model userStat {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @map("user_id") @db.ObjectId
+  correct     Int      @default(0)
+  incorrect   Int      @default(0)
+  skipped     Int      @default(0)
+  score       Int?     @default(0)
+  currentRank Int?     @map("current_rank")
+  prevRank    Int?     @map("prev_rank")
+  User        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
 type Question {
