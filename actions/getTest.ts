@@ -23,7 +23,8 @@ export async function getTest(id: string): Promise<Test> {
                 endedAt: true,
                 quiz: {
                     select: {
-                        name: true
+                        name: true,
+                        timeLimit: true
                     }
                 },
                 questions: {
@@ -41,7 +42,6 @@ export async function getTest(id: string): Promise<Test> {
                         },
                     },
                 },
-                timeLimit: true,
             },
         });
         if (!test) {

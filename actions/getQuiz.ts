@@ -1,10 +1,10 @@
 "use server"
 
-import { Quiz } from "@/lib/types";
+import { GetQuizActionResult } from "@/lib/types";
 import { getSession } from "./getSession"
 import prisma from "@/lib/prisma";
 
-export async function getQuiz(id: string): Promise<Quiz> {
+export async function getQuiz(id: string): Promise<GetQuizActionResult> {
     try {
         if (!id) {
             throw new Error('Id is required to start a quiz')
@@ -16,17 +16,26 @@ export async function getQuiz(id: string): Promise<Quiz> {
             },
             select: {
                 id: true,
-                questions: true,
+                questions: {
+                    select: {
+                        id: true,
+                    }
+                },
                 name: true,
                 timeLimit: true,
-                creator: true,
+                expect: true,
+                creator: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
         if (!quiz) {
             throw new Error(`Quiz was not created: ${quiz}`)
 
         }
-        return quiz as Quiz;
+        return quiz as GetQuizActionResult
     } catch (e) {
         throw new Error(`Error occurred getting quiz data: ${e}`)
     }

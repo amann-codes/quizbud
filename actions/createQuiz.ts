@@ -33,6 +33,7 @@ export async function createQuiz(params: GenerateQuizParams): Promise<string> {
         data: {
             name: quizResult.data.name,
             creatorId: user.id,
+            expect: quizResult.data.expect,
             questions: quizResult.data.questions,
             timeLimit: timeLimitInSeconds
         }

@@ -29,6 +29,7 @@ model Quiz {
   id         String       @id @default(auto()) @map("_id") @db.ObjectId
   name       String
   questions  Question[]
+  expect     String?
   timeLimit  Int          @map("time_limit")
   creatorId  String       @map("creator_id") @db.ObjectId
   creator    User         @relation("QuizCreator", fields: [creatorId], references: [id])

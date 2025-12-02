@@ -16,11 +16,11 @@ export async function getAllTest() {
                     select: {
                         id: true,
                         name: true,
-                        creator: true
+                        creator: true,
+                        timeLimit: true
                     }
                 },
                 id: true,
-                timeLimit: true
             },
             orderBy: {
                 createdAt: "desc"

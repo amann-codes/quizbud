@@ -11,6 +11,16 @@ export async function getAllQuiz() {
                 creatorId: user.id,
             }, orderBy: {
                 createdAt: "desc"
+            }, select: {
+                creator: true,
+                name: true,
+                id: true,
+                timeLimit: true,
+                questions: {
+                    select: {
+                        id: true,
+                    }
+                }
             }
         })
         if (!quiz) {

@@ -16,9 +16,9 @@ export async function createTest(id: string) {
         const test = await prisma.test.create({
             data: {
                 questions: quiz.questions,
-                timeLimit: quiz.timeLimit,
                 userId: user.id,
                 quizId: quiz.id,
+                evaluated:false
             }
         })
         if (!test) {
