@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { UserButton } from './userbutton'
 
 const navItems = [
-    { label: 'Generate Quiz', href: '/' },
+    { label: 'Generate Quiz', href: '/generate' },
     { label: 'Your quizzes', href: '/quiz' },
     { label: 'Test history', href: '/test' },
     { label: 'Leaderboard', href: '/leaderboard' },

@@ -7,9 +7,18 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const isLoggedIn = !!session?.user;
 
-    const isAuthPage = pathname.startsWith("/auth");
+    const isPublicPage = pathname === ("/");
+    if (isPublicPage && isLoggedIn) {
+        return NextResponse.redirect(new URL("/generate", request.url));
+    }
+
+    if (isPublicPage && !isLoggedIn){
+        return NextResponse.next();
+    }
+
+        const isAuthPage = pathname.startsWith("/auth");
     if (isLoggedIn && isAuthPage) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(new URL("/generate", request.url));
     }
 
     if (!isLoggedIn && !isAuthPage) {
