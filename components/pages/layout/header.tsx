@@ -4,9 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { UserButton } from './userbutton'
-import { useQuery } from '@tanstack/react-query'
-import { getUserStat } from '@/actions/getUserStat'
-import { Badge } from '@/components/ui/badge'
 
 const navItems = [
     { label: 'Generate Quiz', href: '/' },
@@ -17,10 +14,6 @@ const navItems = [
 
 export function Header() {
     const pathname = usePathname()
-    const getUserScoreQuery = useQuery({
-        queryKey: ['score'],
-        queryFn: getUserStat
-    })
 
     return (
         <>
@@ -44,14 +37,7 @@ export function Header() {
                         </Link>
                     ))}
                 </div>
-                <div className="flex items-center gap-3">
-                    {getUserScoreQuery.data &&
-                        <Badge variant={'default'} className='px-3 py-2'>
-                            Your Score {getUserScoreQuery.data.score}
-                        </Badge>
-                    }
-                    <UserButton />
-                </div>
+                <UserButton />
             </header>
 
             <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background sm:hidden">
