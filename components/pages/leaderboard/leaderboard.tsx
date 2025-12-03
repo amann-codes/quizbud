@@ -4,9 +4,13 @@ import { getLeaderBoard } from "@/actions/getLeaderboard"
 import { useQuery } from "@tanstack/react-query"
 import { ArrowUp, ArrowDown, AlertCircle, Crown, Medal, Trophy, Users, CircleSmallIcon } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useSession } from "next-auth/react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getInitials } from "@/lib/utils"
 
 interface LeaderboardEntry {
     name: string
+    image: string
     score: number
     currentRank: number
     previousRank: number
@@ -39,6 +43,7 @@ function getRankChange(category: "up" | "down" | "same") {
 }
 
 export function Leaderboard() {
+    const session = useSession();
     const { data = [], isPending, isError } = useQuery<LeaderboardEntry[]>({
         queryKey: ["leaderboard"],
         queryFn: getLeaderBoard,
@@ -101,7 +106,7 @@ export function Leaderboard() {
     }
 
     return (
-        <div className="space-y-4 max-w-2xl mt-12 mx-auto mb-12 sm:mb-0 p-4">
+        <div className="space-y-4 max-w-2xl mt-12 mx-auto mb-12 p-4">
             {data.map((entry, index) => {
                 const change = entry.currentRank < entry.previousRank ? "up" : entry.currentRank > entry.previousRank ? "down" : "same"
                 const rankStyle = getRankChange(change)
@@ -113,21 +118,17 @@ export function Leaderboard() {
                         key={index}
                         className={`
               relative overflow-hidden rounded-2xl border-2 ${rankStyle.border} ${rankStyle.bg}
-               hover:shadow-xl transition-all duration-300
+               hover:shadow-xl transition-all duration-200
             `}
                     >
                         {isTop3 && (
                             <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent pointer-events-none" />
                         )}
 
-                        <div className="flex items-center gap-5 p-6">
-                            <div className={`hidden sm:flex h-14 w-14 items-center justify-center rounded-full ${rankStyle.badgeBg} backdrop-blur-sm`}>
-                                <Icon className={`h-8 w-8 ${rankStyle.text}`} strokeWidth={3} />
-                            </div>
-
+                        <div className="flex items-center gap-5 sm:p-6 p-3">
                             <div
                                 className={`
-                  relative grid h-14 w-14 place-items-center rounded-2xl font-black text-2xl px-5 shadow-lg
+                  relative grid sm:h-14 sm:w-14 h-10 w-10 place-items-center sm:rounded-2xl rounded-lg font-black sm:text-2xl text-xl sm:px-5 shadow-lg
                   ${entry.currentRank === 1
                                         ? "bg-gradient-to-br from-yellow-400 to-amber-600 text-white"
                                         : entry.currentRank === 2
@@ -143,19 +144,30 @@ export function Leaderboard() {
                                 {entry.currentRank === 2 && <Medal className="absolute -top-3 -right-3 h-7 w-7 text-gray-400" />}
                                 {entry.currentRank === 3 && <Trophy className="absolute -top-3 -right-3 h-7 w-7 text-orange-500" />}
                             </div>
-
-                            <div className="flex-1">
-                                <p className="text-xl font-bold text-foreground truncate max-w-xs">{entry.name}</p>
+                            <div><Avatar className="sm:size-12 size-10 border rounded-lg">
+                                {entry.name != "" && (
+                                    < AvatarImage src={entry.image} />
+                                )}
+                                <AvatarFallback className="border rounded-lg sm:text-xl text-lg p-1 font-bold">
+                                    {entry.name && getInitials(entry.name)}
+                                </AvatarFallback>
+                            </Avatar>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="sm:text-xl text-lg font-bold text-foreground truncate">{entry.name}</p>
                                 {change !== "same" && (
-                                    <p className={`text-sm font-medium mt-1 ${rankStyle.text}`}>
+                                    <p className={`sm:text-sm text-xs font-medium mt-1 ${rankStyle.text}`}>
                                         {change === "up" ? "Up" : "Down"} {Math.abs(entry.currentRank - entry.previousRank)} position{Math.abs(entry.currentRank - entry.previousRank) > 1 ? "s" : ""}
                                     </p>
                                 )}
                             </div>
 
                             <div className="text-center">
-                                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Score</p>
-                                <p className="text-3xl font-extrabold text-foreground">{entry.score.toLocaleString()}</p>
+                                <p className="sm:text-sm text-xs font-semibold text-muted-foreground uppercase tracking-wider">Score</p>
+                                <p className="sm:text-3xl sm:font-extrabold text-xl font-bold text-foreground">{entry.score.toLocaleString()}</p>
+                            </div>
+                            <div className={`hidden sm:flex h-14 w-14 items-center justify-center rounded-full ${rankStyle.badgeBg} backdrop-blur-sm`}>
+                                <Icon className={`h-8 w-8 ${rankStyle.text}`} strokeWidth={3} />
                             </div>
                         </div>
                     </div>

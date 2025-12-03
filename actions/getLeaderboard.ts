@@ -12,7 +12,7 @@ export async function getLeaderBoard() {
             currentRank: true,
             prevRank: true,
             User: {
-                select: { name: true },
+                select: { name: true, image: true },
             },
         },
     })
@@ -22,6 +22,7 @@ export async function getLeaderBoard() {
     return top10.map((stat, index) => ({
         id: stat.id,
         name: stat.User?.name || "Anonymous User",
+        image: stat.User?.image || "",
         score: Number(stat.score),
         currentRank: index + 1,
         previousRank: Number(stat.prevRank ?? stat.currentRank ?? index + 1),
