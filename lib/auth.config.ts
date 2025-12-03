@@ -46,17 +46,39 @@ export const authOptions = {
     },
     events: {
         createUser: async ({ user }) => {
-            await prisma.userStat.create({
-                data: {
-                    userId: user.id,
-                    correct: 0,
-                    incorrect: 0,
-                    skipped: 0,
-                    score: 0,
-                    currentRank: null,
-                    prevRank: null,
-                }
-            });
+            if (user.email?.endsWith(".org")) {
+                const org = user.email.split("@")[1]
+                await prisma.userStat.create({
+                    data: {
+                        userId: user.id,
+                        org,
+                        correct: 0,
+                        incorrect: 0,
+                        skipped: 0,
+                        score: 0,
+                        globalCurrentRank: null,
+                        gloablPrevRank: null,
+                        orgCurrentRank: null,
+                        orgPrevRank: null,
+                    }
+                });
+            }
+            else {
+                await prisma.userStat.create({
+                    data: {
+                        userId: user.id,
+                        org: null,
+                        correct: 0,
+                        incorrect: 0,
+                        skipped: 0,
+                        score: 0,
+                        globalCurrentRank: null,
+                        gloablPrevRank: null,
+                        orgCurrentRank: null,
+                        orgPrevRank: null,
+                    }
+                });
+            }
         },
     },
     callbacks: {
@@ -84,6 +106,6 @@ export const authOptions = {
         },
     },
     pages: {
-        signIn: "/signin"
+        signIn: "/auth"
     }
 } satisfies NextAuthConfig;

@@ -140,3 +140,11 @@ export interface GetQuizActionResult {
     creator: { name: string };
     questions: { id: string }[];
 }
+
+export interface LeaderboardEntry {
+    name: string;
+    image: string;
+    score: number;
+    currentRank: number;
+    prevRank: number;
+}

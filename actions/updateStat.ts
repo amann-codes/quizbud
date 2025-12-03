@@ -70,8 +70,10 @@ export async function updateStat(testId: string) {
                 id: true,
                 userId: true,
                 score: true,
-                currentRank: true,
-                prevRank: true,
+                globalCurrentRank: true,
+                gloablPrevRank: true,
+                orgCurrentRank: true,
+                orgPrevRank: true,
                 User: {
                     select: { name: true },
                 },
@@ -85,12 +87,62 @@ export async function updateStat(testId: string) {
             await prisma.userStat.update({
                 where: { id: stat.id },
                 data: {
-                    prevRank: stat.currentRank,
-                    currentRank: newRank,
+                    gloablPrevRank: stat.globalCurrentRank,
+                    globalCurrentRank: newRank,
                 },
             });
-            console.log(`updating rank of ${stat.User?.name} from ${stat.prevRank} to ${stat.currentRank}`)
+
+            console.log(`updating rank of ${stat.User?.name} from ${stat.gloablPrevRank} to ${stat.globalCurrentRank}`)
             console.log("user stat right now", stat)
+        }
+
+        const userOrg = await prisma.userStat.findUnique({
+            where: {
+                userId: test.userId
+            },
+            select: {
+                org: true,
+            },
+        })
+
+        if (userOrg?.org) {
+            const orgStats = await prisma.userStat.findMany({
+                where: {
+                    org: userOrg.org
+                },
+                select: {
+                    id: true,
+                    userId: true,
+                    org: true,
+                    score: true,
+                    globalCurrentRank: true,
+                    gloablPrevRank: true,
+                    orgCurrentRank: true,
+                    orgPrevRank: true,
+                    User: {
+                        select: { name: true },
+                    },
+                },
+
+            })
+
+            for (let i = 0; i < orgStats.length; i++) {
+                const stat = orgStats[i];
+                const newRank = i + 1;
+
+                await prisma.userStat.update({
+                    where: { id: stat.id },
+                    data: {
+                        orgPrevRank: stat.globalCurrentRank,
+                        globalCurrentRank: newRank,
+                    },
+                });
+
+                console.log(`updating rank of ${stat.User?.name} from ${stat.gloablPrevRank} to ${stat.globalCurrentRank}`)
+                console.log("user stat right now", stat)
+            }
+
+
         }
 
         return "stat updated"

@@ -25,7 +25,7 @@ model User {
   createdQuizzes    Quiz[]       @relation("QuizCreator")
   tests             Test[]
   accessibleQuizzes QuizAccess[]
-  userStats         userStat[]
+  userStats         UserStat[]
   accounts          Account[]
 }
 
@@ -106,18 +106,21 @@ model TestEvent {
   processed       Boolean   @default(false)
 }
 
-model userStat {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @unique @map("user_id") @db.ObjectId
-  correct     Int      @default(0)
-  incorrect   Int      @default(0)
-  skipped     Int      @default(0)
-  score       Int?     @default(0)
-  currentRank Int?     @map("current_rank")
-  prevRank    Int?     @map("prev_rank")
-  User        User?    @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+model UserStat {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @unique @map("user_id") @db.ObjectId
+  org               String?
+  correct           Int      @default(0)
+  incorrect         Int      @default(0)
+  skipped           Int      @default(0)
+  score             Int?     @default(0)
+  globalCurrentRank Int?     @map("global_current_rank")
+  gloablPrevRank    Int?     @map("global_prev_rank")
+  orgCurrentRank    Int?     @map("org_current_rank")
+  orgPrevRank       Int?     @map("org_prev_rank")
+  User              User?    @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 }
 
 type Question {
