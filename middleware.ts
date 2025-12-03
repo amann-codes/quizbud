@@ -12,11 +12,11 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/generate", request.url));
     }
 
-    if (isPublicPage && !isLoggedIn){
+    if (isPublicPage && !isLoggedIn) {
         return NextResponse.next();
     }
 
-        const isAuthPage = pathname.startsWith("/auth");
+    const isAuthPage = pathname.startsWith("/auth");
     if (isLoggedIn && isAuthPage) {
         return NextResponse.redirect(new URL("/generate", request.url));
     }
@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
 
     return NextResponse.next();
 }
+
 export const config = {
     matcher: [
         "/((?!api|_next/static|_next/image|favicon.ico).*)",

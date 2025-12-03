@@ -7,7 +7,7 @@ export function AuthPage() {
     const { status } = useSession();
 
     if (status === "authenticated") {
-        redirect("/");
+        redirect("/auth");
     }
 
     return (
