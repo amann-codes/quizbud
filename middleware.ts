@@ -7,13 +7,13 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const isLoggedIn = !!session?.user;
 
-    const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup");
+    const isAuthPage = pathname.startsWith("/auth");
     if (isLoggedIn && isAuthPage) {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
     if (!isLoggedIn && !isAuthPage) {
-        return NextResponse.redirect(new URL("/signin", request.url));
+        return NextResponse.redirect(new URL("/auth", request.url));
     }
 
     return NextResponse.next();
