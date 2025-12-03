@@ -1,5 +1,7 @@
 "use server"
 
+import prisma from "@/lib/prisma"
+
 export async function getOrgLeaderboard({ org }: { org: string }) {
     try {
         const allStats = await prisma.userStat.findMany({
@@ -29,13 +31,13 @@ export async function getOrgLeaderboard({ org }: { org: string }) {
         }
 
         return top10.map((stat, index) => ({
-        id: stat.id,
-        name: stat.User?.name || "Anonymous User",
-        image: stat.User?.image || "",
-        score: Number(stat.score),
-        currentRank: index + 1,
-        prevRank: Number(stat.orgPrevRank ?? stat.orgCurrentRank ?? index + 1),
-    }))
+            id: stat.id,
+            name: stat.User?.name || "Anonymous User",
+            image: stat.User?.image || "",
+            score: Number(stat.score),
+            currentRank: index + 1,
+            prevRank: Number(stat.orgPrevRank ?? stat.orgCurrentRank ?? index + 1),
+        }))
 
     } catch (e) {
         throw new Error(`Error occurred getting leaderboard: ${e}`)
