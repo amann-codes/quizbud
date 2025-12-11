@@ -21,7 +21,7 @@ import {
     FileQuestion
 } from 'lucide-react';
 import { toHMS } from '@/lib/utils';
-import { QuizInstanceInTest } from '@/lib/types';
+import { GetAllTestActionResult } from '@/lib/types';
 
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { Button } from '@/components/ui/button';
@@ -169,10 +169,7 @@ export function Tests() {
                     {getTestQuery.data?.map((q) => (
                         <TestCard
                             key={q.id}
-                            id={q.id}
-                            quiz={q.quiz}
-                            questions={q.questions.length}
-                            timeLimit={q.quiz.timeLimit}
+                            test={q}
                             setIsStarting={setIsStarting}
                         />
                     ))}
@@ -183,19 +180,16 @@ export function Tests() {
 }
 
 interface QuizCardProps {
-    id: string;
-    quiz: QuizInstanceInTest;
-    questions: number;
-    timeLimit: number;
+    test: GetAllTestActionResult;
     setIsStarting: (value: boolean) => void;
 }
 
-const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
+const TestCard = ({ test, setIsStarting }: QuizCardProps) => {
     const router = useRouter();
-    const { h } = toHMS(quiz.timeLimit * 60000);
+    const { h } = toHMS(test.quiz.timeLimit * 60000);
 
     const createTestQuery = useMutation({
-        mutationFn: () => createTest(quiz.id),
+        mutationFn: () => createTest(test.quiz.id),
         onMutate: () => setIsStarting(true),
         onSettled: () => setIsStarting(false),
         onSuccess: (testId) => {
@@ -214,7 +208,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
 
     const handleShare = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        const url = typeof window !== "undefined" ? `${process.env.NEXT_PUBLIC_URL}/quiz/${quiz.id}` : "";
+        const url = typeof window !== "undefined" ? `${process.env.NEXT_PUBLIC_URL}/quiz/${test.quiz.id}` : "";
         try {
             await navigator.clipboard.writeText(url);
             toast.success("Quiz link copied to clipboard");
@@ -224,7 +218,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
     };
 
     const handleViewResult = () => {
-        router.push(`/result/${id}`)
+        router.push(`/result/${test.quiz.id}`)
     }
 
     const itemVariant = {
@@ -240,7 +234,7 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
                 <div className="space-y-4 mb-6">
                     <div className="flex items-start justify-between gap-4">
                         <h3 className="font-semibold text-lg text-zinc-100 line-clamp-2 leading-snug group-hover:text-indigo-300 transition-colors">
-                            {quiz.name}
+                            {test.quiz.name}
                         </h3>
                         <Button
                             size="icon"
@@ -255,11 +249,11 @@ const TestCard = ({ id, quiz, questions, setIsStarting }: QuizCardProps) => {
                     <div className="grid grid-cols-2 gap-2">
                         <div className="flex items-center gap-2 text-xs text-zinc-400 bg-zinc-800/30 p-2 rounded-lg border border-white/5">
                             <User className="h-3.5 w-3.5 text-zinc-500" />
-                            <span className="truncate">{quiz.creator.name || "Anonymous"}</span>
+                            <span className="truncate">{test.quiz.creator.name || "Anonymous"}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-zinc-400 bg-zinc-800/30 p-2 rounded-lg border border-white/5">
                             <FileQuestion className="h-3.5 w-3.5 text-zinc-500" />
-                            <span>{questions} Qs</span>
+                            <span>{test.quiz.questions} Qs</span>
                         </div>
                         <div className="col-span-2 flex items-center gap-2 text-xs text-zinc-400 bg-zinc-800/30 p-2 rounded-lg border border-white/5">
                             <Clock className="h-3.5 w-3.5 text-zinc-500" />

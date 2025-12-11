@@ -154,7 +154,7 @@ export function Quizzes() {
                             key={q.id}
                             id={q.id}
                             name={q.name}
-                            questions={q.questions.length}
+                            questions={q.questions}
                             timeLimit={q.timeLimit}
                             setIsStarting={setIsStarting}
                         />

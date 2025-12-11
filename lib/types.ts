@@ -61,12 +61,7 @@ export type QuizInstanceInTest = {
     name: string;
     timeLimit: number;
     creator: {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        image: string | null
         name: string | null;
-        email: string;
     };
 }
 
@@ -138,7 +133,27 @@ export interface GetQuizActionResult {
     expect: string;
     timeLimit: number;
     creator: { name: string };
-    questions: { id: string }[];
+    questions: number;
+}
+
+export interface GetAllQuizActionResult {
+    id: string;
+    name: string;
+    timeLimit: number;
+    questions: number;
+}
+
+export interface GetAllTestActionResult {
+    id: string
+    quiz: {
+        id: string
+        name: string
+        questions: number
+        creator: {
+            name: string
+        }
+        timeLimit: number
+    }
 }
 
 export interface LeaderboardEntry {

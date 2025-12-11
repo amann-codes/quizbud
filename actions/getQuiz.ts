@@ -16,26 +16,29 @@ export async function getQuiz(id: string): Promise<GetQuizActionResult> {
             },
             select: {
                 id: true,
+                name: true,
                 questions: {
                     select: {
-                        id: true,
+                        id: true
                     }
                 },
-                name: true,
                 timeLimit: true,
                 expect: true,
                 creator: {
                     select: {
                         name: true
                     }
-                }
+                },
             }
         })
         if (!quiz) {
             throw new Error(`Quiz was not created: ${quiz}`)
 
         }
-        return quiz as GetQuizActionResult
+        return {
+            ...quiz,
+            questions: quiz.questions.length
+        } as GetQuizActionResult
     } catch (e) {
         throw new Error(`Error occurred getting quiz data: ${e}`)
     }

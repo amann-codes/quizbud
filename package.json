@@ -33,7 +33,7 @@
     "lucide-react": "^0.544.0",
     "mini-svg-data-uri": "^1.4.4",
     "motion": "^12.23.25",
-    "next": "15.5.4",
+    "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.29",
     "react": "19.1.0",
     "react-dom": "19.1.0",

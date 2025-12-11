@@ -113,7 +113,7 @@ export default function QuizCard({ id }: { id: string }) {
                 <header className="flex flex-col items-center text-center mb-10">
                     <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-6">
                         <HelpCircle className="w-3.5 h-3.5" />
-                        <span>{getQuizQuery.data?.questions.length} Questions</span>
+                        <span>{getQuizQuery.data?.questions} Questions</span>
                     </div>
 
                     <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4 leading-tight">
