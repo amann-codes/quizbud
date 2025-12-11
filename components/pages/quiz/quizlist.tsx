@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { AlertCircle, ClipboardList, Clock, Play, Share2, Sparkles, AlertTriangle, ChevronRight, Loader2 } from "lucide-react"
+import { ClipboardList, Clock, Play, Share2, Sparkles, AlertTriangle, ChevronRight, Loader2 } from "lucide-react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getAllQuiz } from "@/actions/getAllQuiz"
 import { createTest } from "@/actions/createTest"
@@ -99,7 +99,7 @@ export function Quizzes() {
                         No quizzes yet
                     </h1>
                     <p className="text-zinc-400 mb-8 leading-relaxed max-w-sm mx-auto">
-                        You haven't created any quizzes. Master a new domain by generating your first quiz now.
+                        You haven&apos;t created any quizzes. Master a new domain by generating your first quiz now.
                     </p>
                     <div className="flex justify-center">
                         <Link href="/generate">

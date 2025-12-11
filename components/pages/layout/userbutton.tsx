@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-import { LogIn, LogOut, User, Sparkles } from "lucide-react";
+import { LogIn, LogOut, User } from "lucide-react";
 import Link from "next/link";
 
 import {

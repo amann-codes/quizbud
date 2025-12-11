@@ -175,7 +175,7 @@ export function TestCard({ id }: { id: string }) {
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Test Not Found</h1>
                     <p className="text-zinc-400 mb-8 text-sm leading-relaxed">
-                        The test you&apos;re looking for doesn&apos;t exist, has been removed, or you don't have access.
+                        The test you&apos;re looking for doesn&apos;t exist, has been removed, or you don&apos;t have access.
                     </p>
                     <Button onClick={() => router.push('/')} variant="outline"
                         className="border-red-500/30 text-red-400 hover:bg-red-500/10 bg-red-900/10 hover:text-red-300 w-full">

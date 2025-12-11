@@ -20,7 +20,7 @@ import {
     Loader2,
     FileQuestion
 } from 'lucide-react';
-import { cn, toHMS } from '@/lib/utils';
+import { toHMS } from '@/lib/utils';
 import { QuizInstanceInTest } from '@/lib/types';
 
 import { BackgroundBeams } from '@/components/ui/background-beams';
@@ -85,7 +85,7 @@ export function Tests() {
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Error Loading History</h1>
                     <p className="text-zinc-400 mb-8 text-sm leading-relaxed">
-                        We couldn't fetch your test history. Please check your connection.
+                        We could&apos;t fetch your test history. Please check your connection.
                     </p>
                     <Button onClick={() => window.location.reload()} variant="outline"
                         className="border-red-500/30 text-red-400 hover:bg-red-500/10 cursor-pointer bg-red-900/10 hover:text-red-300 w-full">
@@ -108,7 +108,7 @@ export function Tests() {
                         No Tests Taken Yet
                     </h1>
                     <p className="text-zinc-400 mb-8 leading-relaxed max-w-sm mx-auto">
-                        You haven't attempted any tests. Start by taking a quiz to test your aptitude.
+                        You haven&apos;t attempted any tests. Start by taking a quiz to test your aptitude.
                     </p>
                     <div className="flex justify-center">
                         <Link href="/generate">

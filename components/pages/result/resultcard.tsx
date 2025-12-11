@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { AlertTriangle, CheckCircle2, XCircle, MinusCircle, HelpCircle, ChevronDown, Trophy, Home, Share2 } from "lucide-react"
+import { AlertTriangle, CheckCircle2, XCircle, MinusCircle, HelpCircle, ChevronDown, Trophy } from "lucide-react"
 import { getResult } from "@/actions/getResult"
 import { useState } from "react"
 import { getPerformanceMessage, cn } from "@/lib/utils"
@@ -10,7 +10,6 @@ import { BackgroundBeams } from "@/components/ui/background-beams"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 type ResultResponse = {
     correct: Question[]
@@ -24,7 +23,6 @@ type ResultResponse = {
 type CategoryType = "correct" | "incorrect" | "skipped" | "notAnswered"
 
 export function ResultsView({ testId }: { testId: string }) {
-    const router = useRouter()
     const [expandedCategories, setExpandedCategories] = useState<Set<CategoryType>>(new Set(["incorrect"]))
     const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set())
 

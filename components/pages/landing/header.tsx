@@ -1,8 +1,5 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { Clipboard } from "lucide-react"
-import { useState } from "react"
 
 export default function Header() {
   return (

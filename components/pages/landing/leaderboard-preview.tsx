@@ -1,6 +1,6 @@
 "use client"
 
-import { Medal, TrendingUp, TrendingDown, Crown, Trophy, Award } from "lucide-react"
+import { TrendingUp, TrendingDown } from "lucide-react"
 
 const leaderboardData = [
   { rank: 1, prevRank: 2, name: "Alex Chen", score: 9850, improvement: "+215" },
@@ -10,17 +10,9 @@ const leaderboardData = [
   { rank: 5, prevRank: 6, name: "Taylor Davis", score: 9410, improvement: "+205" },
 ]
 
-const getRankIcon = (rank: number) => {
-  if (rank === 1) return <Crown className="w-7 h-7 text-yellow-500 drop-shadow-glow" />
-  if (rank === 2) return <Trophy className="w-7 h-7 text-slate-400 drop-shadow-glow" />
-  if (rank === 3) return <Award className="w-7 h-7 text-orange-600 drop-shadow-glow" />
-  return <span className="text-3xl font-black text-muted/40">#{rank}</span>
-}
-
 export default function LeaderboardPreview() {
   return (
     <section id="Leaderboard" className="py-20 sm:py-32 bg-background relative overflow-hidden">
-      {/* Animated background glows */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-1/3 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl animate-pulse delay-1000" />

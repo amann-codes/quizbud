@@ -65,7 +65,7 @@ export default function QuizCard({ id }: { id: string }) {
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Quiz Not Found</h1>
                     <p className="text-zinc-400 mb-8 text-sm leading-relaxed">
-                        The quiz you're looking for doesn't exist or has been removed.
+                        The quiz you&apos;re looking for doesn&apos;t exist or has been removed.
                     </p>
                     <Button onClick={() => router.push('/')} variant="outline" className="border-zinc-700 cursor-pointer text-zinc-300 hover:bg-zinc-800 bg-zinc-950 hover:text-white w-full gap-2">
                         <ArrowLeft className="h-4 w-4" /> Back to Home
