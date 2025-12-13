@@ -69,7 +69,7 @@ export function ResultsView({ testId }: { testId: string }) {
                         We encountered an error processing your quiz results.
                     </p>
                     <Link href="/">
-                        <Button variant="outline" className="w-full border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                        <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10 bg-red-900/10 hover:text-red-300 w-full">
                             Back to Home
                         </Button>
                     </Link>

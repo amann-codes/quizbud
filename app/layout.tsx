@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${funnelDisplay.variable} ${geistMono.variable} antialiased`}
+        className={`${funnelDisplay.variable} ${geistMono.variable} select-none antialiased`}
       >
         <QueryClientProvider client={client}>
           <Provider>

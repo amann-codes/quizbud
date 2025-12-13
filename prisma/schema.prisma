@@ -86,10 +86,10 @@ model Test {
   userId       String     @map("user_id") @db.ObjectId
   questions    Question[]
   currentIndex Int        @default(0) @map("current_index")
-  testStatus   TestStatus @default(IN_PROGRESS) @map("test_status")
+  testStatus   TestStatus @default(NOT_STARTED) @map("test_status")
   evaluated    Boolean?   @default(false)
   endedAt      DateTime?  @map("ended_at")
-  startedAt    DateTime   @default(now()) @map("started_at")
+  startedAt    DateTime?   @map("started_at")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
 }
@@ -141,6 +141,7 @@ type Option {
 enum TestStatus {
   IN_PROGRESS
   COMPLETED
+  NOT_STARTED
 }
 
 enum EventType {

@@ -218,7 +218,7 @@ const TestCard = ({ test, setIsStarting }: QuizCardProps) => {
     };
 
     const handleViewResult = () => {
-        router.push(`/result/${test.quiz.id}`)
+        router.push(`/result/${test.id}`)
     }
 
     const itemVariant = {
