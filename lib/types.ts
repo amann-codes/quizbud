@@ -69,7 +69,7 @@ export type Test = {
     id: string;
     currentIndex: number;
     testStatus: TestStatus;
-    startedAt: Date;
+    startedAt: Date | null;
     quiz: {
         name: string,
         timeLimit: number
