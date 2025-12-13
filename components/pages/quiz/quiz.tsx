@@ -112,7 +112,7 @@ export default function QuizForm() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex flex-col md:items-center md:justify-center bg-neutral-950 overflow-x-hidden text-white font-sans pt-24 pb-32 px-4 md:py-10">
+        <div className="relative min-h-screen w-full flex flex-col md:items-center md:justify-center bg-neutral-950 overflow-x-hidden text-white pt-24 pb-32 px-4 md:py-10">
             <div className="absolute inset-0 z-0">
                 <BackgroundBeams />
             </div>

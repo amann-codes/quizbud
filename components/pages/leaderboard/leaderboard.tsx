@@ -116,7 +116,7 @@ export function LeaderboardPage() {
     }
 
     return (
-        <main className="min-h-screen bg-neutral-950 flex flex-col items-center pt-24 pb-12 px-4 relative font-sans overflow-x-hidden">
+        <main className="min-h-screen bg-neutral-950 flex flex-col items-center pt-24 pb-12 px-4 relative overflow-x-hidden">
             <div className="fixed inset-0 z-0 pointer-events-none"><BackgroundBeams /></div>
 
             <div className="relative z-10 w-full max-w-2xl md:max-w-4xl lg:max-w-5xl">

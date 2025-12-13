@@ -33,7 +33,7 @@ export function ResultsView({ testId }: { testId: string }) {
 
     if (getResultQuery.isPending) {
         return (
-            <main className="min-h-screen bg-neutral-950 text-white py-12 px-4 relative overflow-hidden font-sans">
+            <main className="min-h-screen bg-neutral-950 text-white py-12 px-4 relative overflow-hidden">
                 <div className="w-full max-w-4xl mx-auto space-y-8 z-10 relative">
                     <div className="bg-zinc-900/50 rounded-3xl border border-white/5 p-8 flex flex-col items-center gap-6 animate-pulse">
                         <div className="h-8 w-64 bg-zinc-800 rounded-full" />
@@ -236,7 +236,7 @@ export function ResultsView({ testId }: { testId: string }) {
     }
 
     return (
-        <main className="min-h-screen bg-neutral-950 text-white py-12 px-4 relative overflow-x-hidden font-sans">
+        <main className="min-h-screen bg-neutral-950 text-white py-12 px-4 relative overflow-x-hidden">
             <div className="absolute inset-0 z-0 pointer-events-none"><BackgroundBeams /></div>
 
             <div className="w-full max-w-4xl mx-auto space-y-8 z-10 mb-12 relative">

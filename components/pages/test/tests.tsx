@@ -37,7 +37,7 @@ export function Tests() {
 
     if (getTestQuery.isPending) {
         return (
-            <main className="min-h-screen w-full bg-neutral-950 flex flex-col pt-24 pb-32 px-4 sm:px-8 relative overflow-hidden font-sans">
+            <main className="min-h-screen w-full bg-neutral-950 flex flex-col pt-24 pb-32 px-4 sm:px-8 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto w-full flex flex-col gap-8 z-10">
                     <div className="space-y-2">
                         <Skeleton className="h-8 w-48 bg-zinc-800 rounded-md" />
@@ -124,7 +124,7 @@ export function Tests() {
     }
 
     return (
-        <main className="min-h-screen w-full flex flex-col pt-24 pb-32 px-4 sm:px-8 bg-neutral-950 relative overflow-x-hidden font-sans">
+        <main className="min-h-screen w-full flex flex-col pt-24 pb-32 px-4 sm:px-8 bg-neutral-950 relative overflow-x-hidden">
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <BackgroundBeams />
             </div>

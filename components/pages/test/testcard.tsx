@@ -185,7 +185,7 @@ export function TestCard({ id }: { id: string }) {
 
     if (getTestQuery.isPending) {
         return (
-            <div className="min-h-screen bg-neutral-950 flex flex-col items-center p-4 sm:p-6 relative overflow-hidden font-sans" >
+            <div className="min-h-screen bg-neutral-950 flex flex-col items-center p-4 sm:p-6 relative overflow-hidden" >
                 <div className="w-full max-w-5xl z-10 mb-8 pt-4 sm:pt-8 sticky top-0" >
                     <div className="flex justify-between items-center mb-4" >
                         <div className="space-y-2" >
@@ -242,7 +242,7 @@ export function TestCard({ id }: { id: string }) {
 
     if (testState === "NOT_STARTED") {
         return (
-            <main className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 relative overflow-hidden font-sans" >
+            <main className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 relative overflow-hidden" >
                 <div className="absolute inset-0 z-0" > <BackgroundBeams /></div >
 
                 <div className="relative z-10 w-full max-w-lg bg-zinc-900/60 backdrop-blur-2xl border border-white/10 p-8 sm:p-12 rounded-[32px] text-center shadow-2xl" >
@@ -287,7 +287,7 @@ export function TestCard({ id }: { id: string }) {
 
     if (shouldShowBlocker) {
         return (
-            <main className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden font-sans z-50" >
+            <main className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden z-50" >
                 <div className="absolute inset-0 bg-red-500/5 backdrop-blur-sm z-0" />
 
                 <div className="relative z-10 w-full max-w-md bg-zinc-900 border border-red-500/30 p-10 rounded-3xl text-center shadow-2xl" >
@@ -410,7 +410,7 @@ export function TestCard({ id }: { id: string }) {
     const currentQuestion = test.questions[currentQuestionIndex];
 
     return (
-        <div className="relative min-h-screen bg-neutral-950 text-white font-sans overflow-hidden" >
+        <div className="relative min-h-screen bg-neutral-950 text-white overflow-hidden" >
             <div className="absolute inset-0 z-0 pointer-events-none" > <BackgroundBeams /></div >
 
             <AnimatePresence>
