@@ -44,6 +44,12 @@ export async function getTest(id: string): Promise<Test> {
                 },
             },
         });
+        if (test?.testStatus === "NOT_STARTED") {
+            return {
+                ...test,
+                questions: []
+            }
+        }
         if (!test) {
             throw new Error('test not found')
         }

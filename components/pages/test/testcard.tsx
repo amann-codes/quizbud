@@ -472,7 +472,7 @@ export function TestCard({ id }: { id: string }) {
                 < div className="w-full max-w-4xl z-10 flex-1 flex flex-col justify-start" >
                     <AnimatePresence mode="wait" >
                         <motion.div
-                            key={currentQuestion.id}
+                            key={currentQuestion?.id}
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
@@ -481,13 +481,13 @@ export function TestCard({ id }: { id: string }) {
                         >
                             <div className="p-6 sm:p-8 rounded-3xl bg-zinc-900/40 backdrop-blur-xl border border-white/5 shadow-2xl" >
                                 <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-relaxed text-zinc-100" >
-                                    {currentQuestion.question}
+                                    {currentQuestion?.question}
                                 </h2>
                             </div>
 
                             < div className="grid grid-cols-1 gap-3 sm:gap-4 mb-12" >
                                 {
-                                    currentQuestion.options.map((option) => {
+                                    currentQuestion?.options.map((option) => {
                                         const isSelected = option.id === selectedOption;
                                         return (
                                             <div
