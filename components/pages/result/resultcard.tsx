@@ -239,7 +239,7 @@ export function ResultsView({ testId }: { testId: string }) {
         <main className="min-h-screen bg-neutral-950 text-white py-12 px-4 relative overflow-x-hidden font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none"><BackgroundBeams /></div>
 
-            <div className="w-full max-w-4xl mx-auto space-y-8 z-10 relative">
+            <div className="w-full max-w-4xl mx-auto space-y-8 z-10 mb-12 relative">
 
                 <div className="relative bg-zinc-900/60 backdrop-blur-xl rounded-[32px] border border-white/10 p-8 md:p-10 text-center shadow-2xl overflow-hidden">
                     <div className={cn("absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 rounded-full blur-[100px] opacity-20 pointer-events-none",

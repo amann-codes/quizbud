@@ -26,8 +26,11 @@ export function TestCard({ id }: { id: string }) {
     const hasTimedOutRef = useRef(false);
     const eventQueRef = useRef<EventPayload[]>([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
-
     const queryClient = useQueryClient();
+
+    const isIOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isMobile = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    const isUnsupportedMobile = isIOS;
 
     const getTestQuery = useQuery({
         queryKey: ["testData", id],
@@ -74,6 +77,8 @@ export function TestCard({ id }: { id: string }) {
     }, []);
 
     const enterFullscreen = () => {
+        if (isUnsupportedMobile) return;
+
         const elem = document.documentElement;
         if (elem.requestFullscreen) {
             elem.requestFullscreen().catch((err) => {
@@ -223,7 +228,7 @@ export function TestCard({ id }: { id: string }) {
                     </div>
                     < h1 className="text-2xl font-bold text-white mb-2" > Test Not Found </h1>
                     < p className="text-zinc-400 mb-8 text-sm leading-relaxed" >
-                        The test you & apos;re looking for doesn & apos; t exist, has been removed, or you don & apos;t have access.
+                        The test you & apos;re looking for doesn & apos;t exist, has been removed, or you don & apos;t have access.
                     </p>
                     < Button onClick={() => router.push('/')
                     } variant="outline"
@@ -248,7 +253,10 @@ export function TestCard({ id }: { id: string }) {
                     < h1 className="text-3xl font-bold text-white mb-3 tracking-tight" > Ready to Begin ? </h1>
                     < p className="text-zinc-400 mb-8 text-base leading-relaxed" >
                         You are about to start <strong> {test.quiz.name} </strong>. <br />
-                        Once you click start, the timer will begin and the test will enter fullscreen mode.
+                        {isUnsupportedMobile
+                            ? "The test will run in your browser. For best experience, rotate to landscape and hide browser bars."
+                            : "Once you click start, the timer will begin and the test will enter fullscreen mode."
+                        }
                     </p>
 
                     < div className="bg-zinc-900/50 rounded-xl p-4 mb-8 text-left text-sm border border-white/5 space-y-2" >
@@ -258,7 +266,7 @@ export function TestCard({ id }: { id: string }) {
                         </div>
                         < div className="flex items-center gap-3 text-zinc-300" >
                             <Maximize2 className="w-4 h-4 text-zinc-500" />
-                            <span>Mode: <strong>Fullscreen Required </strong></span >
+                            <span>Mode: <strong>{isUnsupportedMobile ? "Browser View" : "Fullscreen Required"}</strong></span >
                         </div>
                     </div>
 
@@ -266,7 +274,8 @@ export function TestCard({ id }: { id: string }) {
                         onClick={handleStartTest}
                         disabled={startTestMutation.isPending}
                         className="w-full h-12 text-base font-semibold bg-white text-black cursor-pointer hover:bg-zinc-200 rounded-xl shadow-lg shadow-white/10"
-                    > {startTestMutation.isPending ? <Loader2 className="animate-spin" /> : <Play />}
+                    >
+                        {startTestMutation.isPending ? <Loader2 className="animate-spin" /> : <Play />}
                         {startTestMutation.isPending ? "Initializing..." : "Start Test Now"}
                     </Button>
                 </div>
@@ -274,7 +283,7 @@ export function TestCard({ id }: { id: string }) {
         )
     }
 
-    const shouldShowBlocker = testState === "IN_PROGRESS" && !isFullscreen && !hasTimedOutRef.current && !submitting;
+    const shouldShowBlocker = testState === "IN_PROGRESS" && !isFullscreen && !hasTimedOutRef.current && !submitting && !isUnsupportedMobile;
 
     if (shouldShowBlocker) {
         return (
@@ -288,7 +297,7 @@ export function TestCard({ id }: { id: string }) {
 
                     < h2 className="text-2xl font-bold text-white mb-2" > Fullscreen Required </h2>
                     < p className="text-zinc-400 mb-8 text-sm" >
-                        This test requires fullscreen mode to ensure integrity.Please enable fullscreen to continue.
+                        This test requires fullscreen mode to ensure integrity. Please enable fullscreen to continue.
                     </p>
 
                     < Button
